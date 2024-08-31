@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser()); // Added cookie-parser
 
 // Serve static files from the 'frontend/build' directory for production
-app.use(express.static(join(__dirname, '../frontend/build')));
+app.use(express.static(join(__dirname, 'frontend', 'build')));
 
 // Connect to MongoDB
 const USERNAME = process.env.DB_USERNAME;
