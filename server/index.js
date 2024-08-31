@@ -6,7 +6,7 @@ import bodyParser from 'body-parser';
 import multer from 'multer';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
-import Router from './routes/route.js'
+import Router from './routes/route.js';
 import Connection from './database/db.js';
 import defaultData from './defaultData.js';
 
@@ -22,7 +22,7 @@ const app = express();
 
 // Middleware
 const corsOptions = {
-  origin: ['https://krishi-samadhan-final2-unkt.vercel.app/'], // Replace with your Vercel front-end URL
+  origin: 'https://krishi-samadhan-final2-unkt.vercel.app', // Corrected URL
   credentials: true,
 };
 app.use(cors(corsOptions));
@@ -39,10 +39,10 @@ const PASSWORD = process.env.DB_PASSWORD;
 Connection(USERNAME, PASSWORD);
 
 // Define API routes
-app.use('/', Router); // Assuming API routes should be prefixed with '/api'
+app.use('/api', Router); // Prefixed API routes with '/api'
 
 // Endpoint to serve the React app's index.html
-app.get('/', (req, res) => {
+app.get('*', (req, res) => {
   res.sendFile(join(__dirname, 'frontend', 'build', 'index.html'));
 });
 
@@ -69,12 +69,8 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something broke!');
 });
 
-
+// Initialize default data
 defaultData();
 
-// Export the app for testing or potential future use
-export default (req, res) => {
-  // Ensure app is prepared for each request
-  app(req, res);
-};
-
+// Export the Express app
+export default app;
