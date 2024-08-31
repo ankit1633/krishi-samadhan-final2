@@ -32,7 +32,7 @@ const Home = () => {
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center;
-            height: 300vh;
+            height: 100%;
             width: 100%;
           }
 
