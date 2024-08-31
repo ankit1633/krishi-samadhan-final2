@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const URL = process.env.REACT_APP_API_URL || '';;
+const URL = `${window.location.origin}`;
 
 export const authenticateSignup = async (data) => {
     try {
