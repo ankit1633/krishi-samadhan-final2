@@ -21,11 +21,7 @@ const __dirname = dirname(__filename);
 const app = express();
 
 // Middleware
-const corsOptions = {
-  origin: ['https://krishi-samadhan-final2-unkt.vercel.app/'], // Replace with your Vercel front-end URL
-  credentials: true,
-};
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser()); // Added cookie-parser
