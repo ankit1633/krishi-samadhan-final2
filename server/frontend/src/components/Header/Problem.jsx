@@ -52,14 +52,46 @@ const Error = styled(Typography)`
     margin-top: 5px;
 `;
 
+const UploadState = {
+    IDLE: 1,
+    UPLOADING: 2,
+    UPLOADED: 3,
+};
+Object.freeze(UploadState);
+
 const Problem = ({ openProblem, setProblemDialog }) => {
     const { user } = useContext(DataContext);
+    const [uploadState, setUploadState] = useState(UploadState.IDLE);
     const [problem, setProblem] = useState({ name: '', email: '', problem: '', img: null });
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState(false);
+    const [imgUrl, setImgUrl] = useState('');
 
-    const onFileChange = (e) => {
-        setProblem({ ...problem, img: e.target.files[0] });
+    const onFileChange = async (e) => {
+        setUploadState(UploadState.UPLOADING);
+        const file = e.target.files[0];
+        const formData = new FormData();
+        formData.append('file', file);
+        try {
+            // Use the same endpoint for both image upload and problem submission
+            const res = await fetch('/api/problems', {
+                method: 'POST',
+                body: formData,
+            });
+            const data = await res.json();
+            if (res.ok) {
+                setImgUrl(data.secure_url);
+                setProblem({ ...problem, img: file });
+                setUploadState(UploadState.UPLOADED);
+            } else {
+                setError(data.message || 'Error uploading image');
+                setUploadState(UploadState.IDLE);
+            }
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            setError('Error uploading image');
+            setUploadState(UploadState.IDLE);
+        }
     };
 
     const onValueChange = (e) => {
@@ -70,6 +102,8 @@ const Problem = ({ openProblem, setProblemDialog }) => {
         setProblemDialog(false);
         setError('');
         setProblem({ name: '', email: '', problem: '', img: null });
+        setImgUrl('');
+        setUploadState(UploadState.IDLE);
     };
 
     const handleSnackbarClose = () => {
@@ -86,12 +120,16 @@ const Problem = ({ openProblem, setProblemDialog }) => {
                 formData.append('img', problem.img);
             }
 
-            const response = await authenticateProblem(formData);
-            if (response.status === 200) {
+            const response = await fetch('/problems', {
+                method: 'POST',
+                body: formData,
+            });
+            const data = await response.json();
+            if (response.ok) {
                 setSuccessMessage(true);
                 handleClose();
             } else {
-                setError(response.data.message || 'Error adding problem');
+                setError(data.message || 'Error adding problem');
             }
         } catch (error) {
             console.error('Error occurred while adding problem:', error);
@@ -134,12 +172,31 @@ const Problem = ({ openProblem, setProblemDialog }) => {
                         InputLabelProps={{ style: { color: '#00796b' } }}
                         InputProps={{ style: { color: '#00796b' } }}
                     />
-                    <input
-                        type="file"
-                        name="img"
-                        onChange={onFileChange}
-                        style={{ marginTop: '10px' }}
-                    />
+                    <label
+                        htmlFor="image"
+                        className="block bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-center"
+                    >
+                        {uploadState === UploadState.UPLOADING ? (
+                            <span>Uploading...</span>
+                        ) : (
+                            <span>Upload</span>
+                        )}
+                        <input
+                            type="file"
+                            name="file"
+                            id="image"
+                            className="hidden"
+                            onChange={onFileChange}
+                        />
+                    </label>
+                    {uploadState === UploadState.UPLOADED && imgUrl && (
+                        <div className="w-96 text-green-500">
+                            <span className="block py-2 px-3 text-green-500 text-center">
+                                Uploaded!
+                            </span>
+                            <img className="w-full" src={imgUrl} alt="Uploaded image" />
+                        </div>
+                    )}
                     {error && <Error>{error}</Error>}
                     <LoginButton onClick={addProblem} enabled={isButtonEnabled}>
                         Continue
