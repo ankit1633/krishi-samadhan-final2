@@ -340,13 +340,15 @@ export const addProblem = async (req, res) => {
   
       if (req.file) {
         // Upload image to Cloudinary
-        const result = await cloudinary.uploader.upload_stream({ resource_type: 'auto' }, (error, result) => {
-          if (error) {
-            throw new Error('Error uploading image to Cloudinary');
+        const result = await cloudinary.v2.uploader.upload_stream(
+          { resource_type: 'auto' },
+          (error, result) => {
+            if (error) {
+              throw new Error('Error uploading image to Cloudinary');
+            }
+            imgUrl = result.secure_url;
           }
-          imgUrl = result.secure_url;
-        });
-        req.file.stream.pipe(result); // Pipe the file stream to Cloudinary
+        ).end(req.file.buffer); // Use buffer for in-memory storage
       }
   
       if (!problem || !problem.trim()) {
