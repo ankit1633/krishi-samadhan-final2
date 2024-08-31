@@ -9,14 +9,10 @@ import cookieParser from 'cookie-parser';
 import Router from './routes/route.js'
 import Connection from './database/db.js';
 import defaultData from './defaultData.js';
-import cloudinary from 'cloudinary';
+
 // Initialize dotenv to load environment variables
 dotenv.config();
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+
 // Get current directory and filename (__dirname in ES modules)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -54,33 +50,6 @@ app.get('/', (req, res) => {
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-// Example endpoint for file uploads
-app.post('/upload', upload.single('file'), async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ message: 'No file uploaded' });
-    }
-
-    // Upload file to Cloudinary
-    const result = await new Promise((resolve, reject) => {
-      cloudinary.v2.uploader.upload_stream(
-        { resource_type: 'auto' },
-        (error, result) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(result);
-          }
-        }
-      ).end(req.file.buffer);
-    });
-
-    res.json({ file: result });
-  } catch (error) {
-    console.error('Error uploading file:', error);
-    res.status(500).json({ message: 'Error uploading file' });
-  }
-});
 // Basic error handling
 app.use((err, req, res, next) => {
   console.error(err.stack);
