@@ -1,6 +1,6 @@
 import express from 'express';
 import { userSignup, userLogIn, expertLogIn,userLogout, addQuestion,distributorSignup,distributorLogIn,getWeather, getQuestion,addWarehouse,getWarehouse, addAnswer, getAnswer , addProblem , getProblem, addProblemAnswer,getSolution} from '../controller/user-controller.js';
-import { authenticateToken } from '../util/SecretToken.js';
+import { authenticateToken } from '../util/SecretToken.js'
 import cookieParser from 'cookie-parser';
 const router = express.Router();
 import multer from 'multer';
