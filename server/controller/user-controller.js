@@ -15,8 +15,6 @@ import cookieParser from 'cookie-parser';
 
 dotenv.config();
 
-  
-
 const apiKey = process.env.WEATHER_API_KEY;
 
 export const userSignup = async (req, res) => {
@@ -335,50 +333,34 @@ export const getAnswer = async (request, response) => {
     }
 };
 
-const generateUniqueId = () => {
-    return new ObjectId().toHexString();
-  };
-  
-  export const addProblem = async (req, res) => {
+export const addProblem = async (req, res) => {
+    const generateUniqueId = () => {
+        return new ObjectId().toHexString();
+    }
+
     try {
-      const { name, email, problem } = req.body;
-      let imgUrl = '';
-  
-      // Check if there's a file to upload
-      if (req.file) {
-        const result = await cloudinary.uploader.upload_stream(
-          { folder: 'demo' },
-          (error, result) => {
-            if (error) {
-              console.error('Error uploading to Cloudinary:', error);
-              return res.status(500).json({ message: 'Error uploading image' });
-            }
-            imgUrl = result.secure_url;
-            // Proceed with saving the problem after image upload
-            saveProblem();
-          }
-        );
-        streamifier.createReadStream(req.file.buffer).pipe(result);
-      } else {
-        saveProblem();
-      }
-  
-      const saveProblem = async () => {
-        if (!problem || !problem.trim()) {
-          return res.status(400).json({ message: 'Problem description is required' });
+        const { name, email, problem } = req.body;
+        let imgUrl = '';
+
+        if (req.file) {
+            // Upload image to Cloudinary
+            const result = await cloudinary.uploader.upload(req.file.path);
+            imgUrl = result.secure_url; // Get the URL of the uploaded image
         }
-  
+
+        if (!problem || !problem.trim()) {
+            return res.status(400).json({ message: 'Problem description is required' });
+        }
+
         const id = generateUniqueId();
         const newProblem = new Problem({ id, name, email, problem, img: imgUrl });
         await newProblem.save();
         res.status(200).json({ message: 'Problem added successfully' });
-      };
-  
     } catch (error) {
-      console.error('Error occurred while adding problem:', error);
-      res.status(500).json({ message: 'Error adding problem' });
+        console.error('Error occurred while adding problem:', error);
+        res.status(500).json({ message: 'Error adding problem' });
     }
-  };
+};
 
 export const getProblem = async (req, res) => {
     try {

@@ -6,43 +6,43 @@ import ProblemList from './ProblemList.jsx';
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
     '.MuiDialog-paper': {
-        background: '#f8f8f8',
+        background: '#f8f8f8', // Off-white background
         borderRadius: '10px',
-        width: '80%',
-        maxWidth: '600px',
-        height: 'auto',
+        width: '80%', // Adjusted width for smaller screens
+        maxWidth: '600px', // Maximum width for large screens
+        height: 'auto', // Adjust height to fit content
         [theme.breakpoints.down('sm')]: {
-            width: '90%',
+            width: '90%', // Further adjust width for extra small screens
         },
     },
 }));
 
 const ContentBox = styled(Box)(({ theme }) => ({
-    background: '#f8f8f8',
+    background: '#f8f8f8', // Off-white background
     padding: '20px',
     display: 'flex',
     flexDirection: 'column',
     borderRadius: '10px',
-    color: '#00796b',
+    color: '#00796b', // Teal text color
     [theme.breakpoints.down('sm')]: {
-        padding: '15px',
+        padding: '15px', // Adjust padding for smaller screens
     },
 }));
 
 const LoginButton = styled(Button)(({ theme, enabled }) => ({
     textTransform: 'none',
-    background: enabled ? '#fdd835' : '#f0f0f0',
-    color: enabled ? '#000000' : '#bdbdbd',
+    background: enabled ? '#fdd835' : '#f0f0f0', // Light yellow background for enabled state
+    color: enabled ? '#000000' : '#bdbdbd', // Black text color for enabled state
     height: '48px',
     borderRadius: '2px',
     marginTop: '20px',
     '&:hover': {
-        background: enabled ? '#fbc02d' : '#e0e0e0',
-        color: '#000000',
+        background: enabled ? '#fbc02d' : '#e0e0e0', // Darker yellow on hover
+        color: '#000000', // Black text color on hover for better contrast
     },
     [theme.breakpoints.down('sm')]: {
-        width: '100%',
-        fontSize: '14px',
+        width: '100%', // Full width on small screens
+        fontSize: '14px', // Adjust font size for better readability on smaller screens
     },
 }));
 
@@ -52,48 +52,16 @@ const Error = styled(Typography)`
     margin-top: 5px;
 `;
 
-const UploadState = {
-    IDLE: 1,
-    UPLOADING: 2,
-    UPLOADED: 3,
-};
-Object.freeze(UploadState);
-
 const Problem = ({ openProblem, setProblemDialog }) => {
     const { user } = useContext(DataContext);
-    const [uploadState, setUploadState] = useState(UploadState.IDLE);
     const [problem, setProblem] = useState({ name: '', email: '', problem: '', img: null });
     const [error, setError] = useState('');
-    const [successMessage, setSuccessMessage] = useState(false);
-    const [imgUrl, setImgUrl] = useState('');
-
-    const onFileChange = async (e) => {
-        setUploadState(UploadState.UPLOADING);
-        const file = e.target.files[0];
-        const formData = new FormData();
-        formData.append('file', file);
-        try {
-            // Use the same endpoint for both image upload and problem submission
-            const res = await fetch('/api/problems', {
-                method: 'POST',
-                body: formData,
-            });
-            const data = await res.json();
-            if (res.ok) {
-                setImgUrl(data.secure_url);
-                setProblem({ ...problem, img: file });
-                setUploadState(UploadState.UPLOADED);
-            } else {
-                setError(data.message || 'Error uploading image');
-                setUploadState(UploadState.IDLE);
-            }
-        } catch (error) {
-            console.error('Error uploading image:', error);
-            setError('Error uploading image');
-            setUploadState(UploadState.IDLE);
-        }
+    const [successMessage, setSuccessMessage] = useState(false); // State for success message
+  
+    const onFileChange = (e) => {
+        setProblem({ ...problem, img: e.target.files[0] });
     };
-
+  
     const onValueChange = (e) => {
         setProblem({ ...problem, [e.target.name]: e.target.value });
     };
@@ -102,14 +70,12 @@ const Problem = ({ openProblem, setProblemDialog }) => {
         setProblemDialog(false);
         setError('');
         setProblem({ name: '', email: '', problem: '', img: null });
-        setImgUrl('');
-        setUploadState(UploadState.IDLE);
     };
 
     const handleSnackbarClose = () => {
         setSuccessMessage(false);
     };
-
+  
     const addProblem = async () => {
         try {
             const formData = new FormData();
@@ -119,24 +85,21 @@ const Problem = ({ openProblem, setProblemDialog }) => {
             if (problem.img) {
                 formData.append('img', problem.img);
             }
-
-            const response = await fetch('/problems', {
-                method: 'POST',
-                body: formData,
-            });
-            const data = await response.json();
-            if (response.ok) {
-                setSuccessMessage(true);
+  
+            const response = await authenticateProblem(formData);
+            if (response.status === 200) {
+                setSuccessMessage(true); // Show success message
                 handleClose();
             } else {
-                setError(data.message || 'Error adding problem');
+                setError(response.data.message || 'Error adding problem');
             }
         } catch (error) {
             console.error('Error occurred while adding problem:', error);
             setError('Error adding problem');
         }
     };
-
+  
+    // Check if all fields are filled
     const isButtonEnabled = problem.name && problem.email && problem.problem;
 
     return (
@@ -149,8 +112,8 @@ const Problem = ({ openProblem, setProblemDialog }) => {
                         name="name"
                         label="Enter name"
                         required
-                        InputLabelProps={{ style: { color: '#00796b' } }}
-                        InputProps={{ style: { color: '#00796b' } }}
+                        InputLabelProps={{ style: { color: '#00796b' } }} // Teal label color
+                        InputProps={{ style: { color: '#00796b' } }} // Teal input text color
                     />
                     <TextField
                         variant="standard"
@@ -158,8 +121,8 @@ const Problem = ({ openProblem, setProblemDialog }) => {
                         name="email"
                         label="Enter email"
                         required
-                        InputLabelProps={{ style: { color: '#00796b' } }}
-                        InputProps={{ style: { color: '#00796b' } }}
+                        InputLabelProps={{ style: { color: '#00796b' } }} // Teal label color
+                        InputProps={{ style: { color: '#00796b' } }} // Teal input text color
                     />
                     <TextField
                         variant="standard"
@@ -169,34 +132,15 @@ const Problem = ({ openProblem, setProblemDialog }) => {
                         multiline
                         rows={8}
                         required
-                        InputLabelProps={{ style: { color: '#00796b' } }}
-                        InputProps={{ style: { color: '#00796b' } }}
+                        InputLabelProps={{ style: { color: '#00796b' } }} // Teal label color
+                        InputProps={{ style: { color: '#00796b' } }} // Teal input text color
                     />
-                    <label
-                        htmlFor="image"
-                        className="block bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-center"
-                    >
-                        {uploadState === UploadState.UPLOADING ? (
-                            <span>Uploading...</span>
-                        ) : (
-                            <span>Upload</span>
-                        )}
-                        <input
-                            type="file"
-                            name="file"
-                            id="image"
-                            className="hidden"
-                            onChange={onFileChange}
-                        />
-                    </label>
-                    {uploadState === UploadState.UPLOADED && imgUrl && (
-                        <div className="w-96 text-green-500">
-                            <span className="block py-2 px-3 text-green-500 text-center">
-                                Uploaded!
-                            </span>
-                            <img className="w-full" src={imgUrl} alt="Uploaded image" />
-                        </div>
-                    )}
+                    <input
+                        type="file"
+                        name="img"
+                        onChange={onFileChange}
+                        style={{ marginTop: '10px' }} // Margin for spacing
+                    />
                     {error && <Error>{error}</Error>}
                     <LoginButton onClick={addProblem} enabled={isButtonEnabled}>
                         Continue
@@ -209,6 +153,7 @@ const Problem = ({ openProblem, setProblemDialog }) => {
                     </Box>
                 </ContentBox>
             )}
+            {/* Snackbar for success message */}
             <Snackbar open={successMessage} autoHideDuration={6000} onClose={handleSnackbarClose}>
                 <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
                     Problem added successfully!
