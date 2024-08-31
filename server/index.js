@@ -39,7 +39,7 @@ app.use('/api', Router); // Assuming API routes should be prefixed with '/api'
 
 // Endpoint to serve the React app's index.html
 app.get('*', (req, res) => {
-  res.sendFile(join(__dirname, '../frontend/build', 'index.html'));
+  res.sendFile(join(__dirname, 'frontend', 'build', 'index.html'));
 });
 
 // Multer configuration for file uploads
