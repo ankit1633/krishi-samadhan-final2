@@ -6,9 +6,9 @@ import bodyParser from 'body-parser';
 import multer from 'multer';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
-import Router from '../server/routes/route.js'
-import Connection from '../database/db.js';
-import defaultData from '../defaultData.js';
+import Router from './routes/route.js'
+import Connection from './database/db.js';
+import defaultData from './defaultData.js';
 
 // Initialize dotenv to load environment variables
 dotenv.config();
