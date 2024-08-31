@@ -22,11 +22,9 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: '*', // Allow all origins (adjust as needed)
   methods: ["POST", "GET"],
-  credentials: true
+  credentials: true,
 }));
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
