@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const URL = 'http://localhost:8000';
+const URL = `${window.location.origin}`;;
 
 export const authenticateSignup = async (data) => {
     try {
