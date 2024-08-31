@@ -29,16 +29,16 @@ app.use(cookieParser()); // Added cookie-parser
 // Serve static files from the 'frontend/build' directory for production
 app.use(express.static(join(__dirname, '../frontend/build')));
 
-// Define API routes
-app.use('/', Router);
-
 // Connect to MongoDB
 const USERNAME = process.env.DB_USERNAME;
 const PASSWORD = process.env.DB_PASSWORD;
 Connection(USERNAME, PASSWORD);
 
+// Define API routes
+app.use('/api', Router); // Assuming API routes should be prefixed with '/api'
+
 // Endpoint to serve the React app's index.html
-app.get('/', (req, res) => {
+app.get('*', (req, res) => {
   res.sendFile(join(__dirname, '../frontend/build', 'index.html'));
 });
 
@@ -59,10 +59,17 @@ app.post('/upload', upload.single('file'), (req, res) => {
   res.json({ file: req.file });
 });
 
+// Basic error handling
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
+
 // Export the Express app to handle requests
 export default (req, res) => {
-  app(req, res);
+  return new Promise((resolve, reject) => {
+    app(req, res).on('finish', resolve).on('error', reject);
+  });
 };
 
-// Load default data (initialize some data)
-defaultData();
+
