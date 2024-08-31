@@ -335,45 +335,50 @@ export const getAnswer = async (request, response) => {
     }
 };
 
-export const addProblem = async (req, res) => {
-    const generateUniqueId = () => {
-        return new ObjectId().toHexString();
-    }
-
+const generateUniqueId = () => {
+    return new ObjectId().toHexString();
+  };
+  
+  export const addProblem = async (req, res) => {
     try {
-        const { name, email, problem } = req.body;
-        let imgUrl = '';
-
-        if (req.file) {
-            // Upload image to Cloudinary from buffer
-            const result = await new Promise((resolve, reject) => {
-                cloudinary.uploader.upload_stream(
-                    { resource_type: 'auto' },
-                    (error, result) => {
-                        if (error) {
-                            reject(new Error('Error uploading image to Cloudinary'));
-                        } else {
-                            resolve(result.secure_url);
-                        }
-                    }
-                ).end(req.file.buffer); // End the stream with the file buffer
-            });
-            imgUrl = result;
-        }
-
+      const { name, email, problem } = req.body;
+      let imgUrl = '';
+  
+      // Check if there's a file to upload
+      if (req.file) {
+        const result = await cloudinary.uploader.upload_stream(
+          { folder: 'demo' },
+          (error, result) => {
+            if (error) {
+              console.error('Error uploading to Cloudinary:', error);
+              return res.status(500).json({ message: 'Error uploading image' });
+            }
+            imgUrl = result.secure_url;
+            // Proceed with saving the problem after image upload
+            saveProblem();
+          }
+        );
+        streamifier.createReadStream(req.file.buffer).pipe(result);
+      } else {
+        saveProblem();
+      }
+  
+      const saveProblem = async () => {
         if (!problem || !problem.trim()) {
-            return res.status(400).json({ message: 'Problem description is required' });
+          return res.status(400).json({ message: 'Problem description is required' });
         }
-
+  
         const id = generateUniqueId();
-        const newProblem = new Problem({ name, email, problem, img: imgUrl });
+        const newProblem = new Problem({ id, name, email, problem, img: imgUrl });
         await newProblem.save();
         res.status(200).json({ message: 'Problem added successfully' });
+      };
+  
     } catch (error) {
-        console.error('Error occurred while adding problem:', error);
-        res.status(500).json({ message: 'Error adding problem' });
+      console.error('Error occurred while adding problem:', error);
+      res.status(500).json({ message: 'Error adding problem' });
     }
-};
+  };
 
 export const getProblem = async (req, res) => {
     try {
