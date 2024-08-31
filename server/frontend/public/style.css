@@ -1,0 +1,7 @@
+body {
+    background-image: url('krishi-samadhan-old\client\public\back1.jpg');
+    background-size: cover; /* Ensure the image covers the entire screen */
+    background-repeat: no-repeat; /* Prevent the image from repeating */
+    background-position: center; /* Center the image */
+  }
+  
