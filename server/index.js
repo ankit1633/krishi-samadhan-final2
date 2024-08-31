@@ -21,7 +21,12 @@ const __dirname = dirname(__filename);
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors(
+  {
+    methods: ["POST","GET"],
+    credentials: true
+  }
+));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser()); // Added cookie-parser
