@@ -15,6 +15,8 @@ import cookieParser from 'cookie-parser';
 
 dotenv.config();
 
+  
+
 const apiKey = process.env.WEATHER_API_KEY;
 
 export const userSignup = async (req, res) => {
@@ -340,15 +342,20 @@ export const addProblem = async (req, res) => {
   
       if (req.file) {
         // Upload image to Cloudinary
-        const result = await cloudinary.v2.uploader.upload_stream(
-          { resource_type: 'auto' },
-          (error, result) => {
-            if (error) {
-              throw new Error('Error uploading image to Cloudinary');
+        const result = await new Promise((resolve, reject) => {
+          cloudinary.v2.uploader.upload_stream(
+            { resource_type: 'auto' },
+            (error, result) => {
+              if (error) {
+                reject(new Error('Error uploading image to Cloudinary'));
+              } else {
+                resolve(result);
+              }
             }
-            imgUrl = result.secure_url;
-          }
-        ).end(req.file.buffer); // Use buffer for in-memory storage
+          ).end(req.file.buffer); // Use buffer for in-memory storage
+        });
+  
+        imgUrl = result.secure_url;
       }
   
       if (!problem || !problem.trim()) {

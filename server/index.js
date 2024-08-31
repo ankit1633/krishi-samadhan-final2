@@ -6,7 +6,7 @@ import bodyParser from 'body-parser';
 import multer from 'multer';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
-import Router from './routes/route.js'
+import Router from './routes/route.js';
 import Connection from './database/db.js';
 import defaultData from './defaultData.js';
 
@@ -21,15 +21,13 @@ const __dirname = dirname(__filename);
 const app = express();
 
 // Middleware
-app.use(cors(
-  {
-    methods: ["POST","GET"],
-    credentials: true
-  }
-));
+app.use(cors({
+  methods: ["POST", "GET"],
+  credentials: true,
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser()); // Added cookie-parser
+app.use(cookieParser());
 
 // Serve static files from the 'frontend/build' directory for production
 app.use(express.static(join(__dirname, 'frontend', 'build')));
@@ -47,21 +45,14 @@ app.get('/', (req, res) => {
   res.sendFile(join(__dirname, 'frontend', 'build', 'index.html'));
 });
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
-
 // Basic error handling
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Something broke!');
 });
 
-
+// Initialize default data
 defaultData();
 
 // Export the app for testing or potential future use
-export default (req, res) => {
-  // Ensure app is prepared for each request
-  app(req, res);
-};
-
+export default app;
