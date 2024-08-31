@@ -65,11 +65,12 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something broke!');
 });
 
-// Export the Express app to handle requests
-export default (req, res) => {
-  return new Promise((resolve, reject) => {
-    app(req, res).on('finish', resolve).on('error', reject);
-  });
-};
 
+defaultData();
+
+// Export the app for testing or potential future use
+export default (req, res) => {
+  // Ensure app is prepared for each request
+  app(req, res);
+};
 
