@@ -341,18 +341,20 @@ export const addProblem = async (req, res) => {
       let imgUrl = '';
   
       if (req.file) {
-        // Upload image to Cloudinary
+        // Use Cloudinary to upload the image from the Buffer
         const result = await new Promise((resolve, reject) => {
-          cloudinary.v2.uploader.upload_stream(
+          const uploadStream = cloudinary.uploader.upload_stream(
             { resource_type: 'auto' },
             (error, result) => {
               if (error) {
-                reject(new Error('Error uploading image to Cloudinary'));
-              } else {
-                resolve(result);
+                return reject(new Error('Error uploading image to Cloudinary'));
               }
+              resolve(result);
             }
-          ).end(req.file.buffer); // Use buffer for in-memory storage
+          );
+  
+          // Pipe the file buffer to Cloudinary upload stream
+          uploadStream.end(req.file.buffer);
         });
   
         imgUrl = result.secure_url;
@@ -370,7 +372,7 @@ export const addProblem = async (req, res) => {
       res.status(500).json({ message: 'Error adding problem' });
     }
   };
-
+  
 export const getProblem = async (req, res) => {
     try {
         // Fetch problems where answer is either an empty string or not set
