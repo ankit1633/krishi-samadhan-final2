@@ -336,37 +336,33 @@ export const getAnswer = async (request, response) => {
 };
 
 export const addProblem = async (req, res) => {
-    try {
-      const { name, email, problem } = req.body;
-      let imgUrl = '';
-  
-      if (req.file) {
-        // Handle file upload to Cloudinary using the buffer directly
-        const result = await cloudinary.uploader.upload_stream(
-          { resource_type: 'auto' },
-          (error, result) => {
-            if (error) {
-              throw new Error('Error uploading image to Cloudinary');
-            }
-            return result;
-          }
-        ).end(req.file.buffer);
-  
-        imgUrl = result.secure_url;
-      }
-  
-      if (!problem || !problem.trim()) {
-        return res.status(400).json({ message: 'Problem description is required' });
-      }
-  
-      const newProblem = new Problem({ name, email, problem, img: imgUrl });
-      await newProblem.save();
-      res.status(200).json({ message: 'Problem added successfully' });
-    } catch (error) {
-      console.error('Error occurred while adding problem:', error);
-      res.status(500).json({ message: 'Error adding problem' });
+    const generateUniqueId = () => {
+        return new ObjectId().toHexString();
     }
-  };
+
+    try {
+        const { name, email, problem } = req.body;
+        let imgUrl = '';
+
+        if (req.file) {
+            // Upload image to Cloudinary
+            const result = await cloudinary.uploader.upload(req.file.path);
+            imgUrl = result.secure_url; // Get the URL of the uploaded image
+        }
+
+        if (!problem || !problem.trim()) {
+            return res.status(400).json({ message: 'Problem description is required' });
+        }
+
+        const id = generateUniqueId();
+        const newProblem = new Problem({ id, name, email, problem, img: imgUrl });
+        await newProblem.save();
+        res.status(200).json({ message: 'Problem added successfully' });
+    } catch (error) {
+        console.error('Error occurred while adding problem:', error);
+        res.status(500).json({ message: 'Error adding problem' });
+    }
+};
 
 export const getProblem = async (req, res) => {
     try {
