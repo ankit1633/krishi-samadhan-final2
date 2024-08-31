@@ -35,10 +35,10 @@ const PASSWORD = process.env.DB_PASSWORD;
 Connection(USERNAME, PASSWORD);
 
 // Define API routes
-app.use('/api', Router); // Assuming API routes should be prefixed with '/api'
+app.use('/', Router); // Assuming API routes should be prefixed with '/api'
 
 // Endpoint to serve the React app's index.html
-app.get('*', (req, res) => {
+app.get('/', (req, res) => {
   res.sendFile(join(__dirname, 'frontend', 'build', 'index.html'));
 });
 
