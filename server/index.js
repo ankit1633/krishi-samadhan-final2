@@ -6,7 +6,7 @@ import bodyParser from 'body-parser';
 import multer from 'multer';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
-import Router from '../routes/route.js';
+import Router from '../server/routes/route.js'
 import Connection from '../database/db.js';
 import defaultData from '../defaultData.js';
 
