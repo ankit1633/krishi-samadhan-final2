@@ -13,7 +13,7 @@ import axios from 'axios';
 import { ObjectId } from 'mongodb';
 import cookieParser from 'cookie-parser';
 import path from 'path';
-const dataUriToBuffer = require('data-uri-to-buffer');
+import dataUriToBuffer from 'data-uri-to-buffer';
 dotenv.config();
 
 const apiKey = process.env.WEATHER_API_KEY;
