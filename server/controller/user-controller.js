@@ -7,7 +7,7 @@ import Distributor from '../model/distributor-schema.js';
 import { createSecretToken } from '../util/SecretToken.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import cloudinary from '../util/Cloudinary.js';
+import cloudinary from 'cloudinary';
 import dotenv from 'dotenv';
 import axios from 'axios';
 import { ObjectId } from 'mongodb';
@@ -16,6 +16,12 @@ import path from 'path';
 import multer from 'multer';
 
 dotenv.config();
+cloudinary.v2.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_SECRET_KEY,
+  });
+  
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 const apiKey = process.env.WEATHER_API_KEY;
@@ -336,9 +342,9 @@ export const getAnswer = async (request, response) => {
     }
 };
 
-const generateUniqueId = () => new ObjectId().toHexString();
+export const generateUniqueId = () => new ObjectId().toHexString();
 
-const createImage = async (img) => {
+export const createImage = async (img) => {
     try {
         const extension = path.extname(img.originalname).slice(1); // Remove the dot
         const base64Image = `data:image/${extension};base64,${img.buffer.toString('base64')}`;
@@ -362,6 +368,12 @@ export const addProblem = async (req, res) => {
 
         if (!problem || !problem.trim()) {
             return res.status(400).json({ message: 'Problem description is required' });
+        }
+
+        // Check for duplicate question
+        const existingProblem = await Problem.findOne({ problem });
+        if (existingProblem) {
+            return res.status(400).json({ message: 'Problem already exists' });
         }
 
         const id = generateUniqueId();
