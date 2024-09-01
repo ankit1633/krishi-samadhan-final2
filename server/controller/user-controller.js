@@ -13,7 +13,7 @@ import axios from 'axios';
 import { ObjectId } from 'mongodb';
 import cookieParser from 'cookie-parser';
 import path from 'path';
-import parser from 'data-uri-parser';
+import DataURI from 'datauri/parser';
 dotenv.config();
 
 const apiKey = process.env.WEATHER_API_KEY;
@@ -337,7 +337,7 @@ export const getAnswer = async (request, response) => {
 export const addProblem = async (req, res) => {
     const generateUniqueId = () => {
         return new ObjectId().toHexString();
-    }
+    };
 
     try {
         const { name, email, problem } = req.body;
@@ -347,6 +347,7 @@ export const addProblem = async (req, res) => {
             // Ensure req.file exists and is a file object with buffer
             const createImage = async (img) => {
                 try {
+                    const parser = new DataURI();
                     const base64Image = parser.format(path.extname(img.originalname).toString(), img.buffer);
                     const result = await cloudinary.uploader.upload(base64Image.content, { resource_type: 'image' });
                     imgUrl = result.secure_url; // Get the URL of the uploaded image
