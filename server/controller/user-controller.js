@@ -14,6 +14,7 @@ import { ObjectId } from 'mongodb';
 import cookieParser from 'cookie-parser';
 import path from 'path';
 import multer from 'multer';
+import streamifier from 'streamifier';
 
 dotenv.config();
 cloudinary.v2.config({
@@ -22,8 +23,7 @@ cloudinary.v2.config({
     api_secret: process.env.CLOUDINARY_SECRET_KEY,
   });
   
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+
 const apiKey = process.env.WEATHER_API_KEY;
 
 export const userSignup = async (req, res) => {
@@ -342,38 +342,40 @@ export const getAnswer = async (request, response) => {
     }
 };
 
-export const generateUniqueId = () => new ObjectId().toHexString();
+let streamUpload = (req) => {
+    return new Promise((resolve, reject) => {
+        let stream = cloudinary.uploader.upload_stream(
+            (error, result) => {
+                if (result) {
+                    resolve(result);
+                } else {
+                    reject(error);
+                }
+            }
+        );
 
-export const createImage = async (img) => {
-    try {
-        const extension = path.extname(img.originalname).slice(1); // Remove the dot
-        const base64Image = `data:image/${extension};base64,${img.buffer.toString('base64')}`;
-        const result = await cloudinary.v2.uploader.upload(base64Image, { resource_type: 'image' });
-        return result.secure_url;
-    } catch (uploadError) {
-        console.error('Error uploading image to Cloudinary:', uploadError);
-        throw new Error('Error uploading image');
-    }
+        // Convert buffer to readable stream
+        streamifier.createReadStream(req.file.buffer).pipe(stream);
+    });
 };
 
-
 export const addProblem = async (req, res) => {
+    const generateUniqueId = () => {
+        return new ObjectId().toHexString();
+    }
+
     try {
         const { name, email, problem } = req.body;
         let imgUrl = '';
 
         if (req.file) {
-            imgUrl = await createImage(req.file);
+            // Upload image to Cloudinary using streamUpload
+            const result = await streamUpload(req);
+            imgUrl = result.secure_url; // Get the URL of the uploaded image
         }
 
         if (!problem || !problem.trim()) {
             return res.status(400).json({ message: 'Problem description is required' });
-        }
-
-        // Check for duplicate question
-        const existingProblem = await Problem.findOne({ problem });
-        if (existingProblem) {
-            return res.status(400).json({ message: 'Problem already exists' });
         }
 
         const id = generateUniqueId();

@@ -119,7 +119,7 @@ export const authenticateProblem = async (data) => {
         }
         return await axios.post(`${URL}/problems`, data, { withCredentials: true });
     } catch (error) {
-        console.log('Error while calling add-problem API:', error);
+        console.log(`Error while calling add-problem API:`, error);
         return error.response;
     }
 };
