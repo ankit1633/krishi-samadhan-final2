@@ -351,22 +351,9 @@ export const addProblem = async (req, res) => {
                     const extension = path.extname(img.originalname).toString().slice(1); // Remove the dot
                     const base64Image = `data:image/${extension};base64,${img.buffer.toString('base64')}`;
 
-                    // Use data-uri-to-buffer to convert data URI to buffer
-                    const buffer = dataUriToBuffer(base64Image);
-
                     // Upload image to Cloudinary
-                    const result = await cloudinary.v2.uploader.upload_stream({ resource_type: 'image' }, (error, result) => {
-                        if (error) {
-                            console.error('Error uploading image to Cloudinary:', error);
-                            throw new Error('Error uploading image');
-                        } else {
-                            imgUrl = result.secure_url;
-                        }
-                    });
-
-                    // Pass the buffer to the Cloudinary upload stream
-                    buffer.pipe(result);
-
+                    const result = await cloudinary.v2.uploader.upload(base64Image, { resource_type: 'image' });
+                    imgUrl = result.secure_url; // Get the URL of the uploaded image
                 } catch (uploadError) {
                     console.error('Error uploading image to Cloudinary:', uploadError);
                     throw new Error('Error uploading image');
