@@ -7,7 +7,7 @@ import Distributor from '../model/distributor-schema.js';
 import { createSecretToken } from '../util/SecretToken.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import cloudinary from 'cloudinary';
+import cloudinary from '../util/Cloudinary.js';
 import dotenv from 'dotenv';
 import axios from 'axios';
 import { ObjectId } from 'mongodb';
@@ -17,11 +17,7 @@ import multer from 'multer';
 import streamifier from 'streamifier';
 
 dotenv.config();
-cloudinary.v2.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_SECRET_KEY,
-  });
+
   
 
 const apiKey = process.env.WEATHER_API_KEY;
@@ -365,28 +361,50 @@ export const addProblem = async (req, res) => {
     }
 
     try {
+        console.log('Request body:', req.body);
+        console.log('Request file:', req.file);
+
         const { name, email, problem } = req.body;
         let imgUrl = '';
 
         if (req.file) {
-            // Upload image to Cloudinary using streamUpload
-            const result = await streamUpload(req);
-            imgUrl = result.secure_url; // Get the URL of the uploaded image
+            console.log('File detected, starting upload...');
+
+            try {
+                // Upload image to Cloudinary using streamUpload
+                const result = await streamUpload(req);
+                imgUrl = result.secure_url; // Get the URL of the uploaded image
+
+                console.log('Image uploaded successfully. URL:', imgUrl);
+            } catch (uploadError) {
+                console.error('Cloudinary upload error:', uploadError);
+                return res.status(500).json({ message: 'Error uploading image' });
+            }
+        } else {
+            console.log('No file detected.');
         }
 
         if (!problem || !problem.trim()) {
+            console.log('Problem description is missing or empty.');
             return res.status(400).json({ message: 'Problem description is required' });
         }
 
         const id = generateUniqueId();
+        console.log('Generated unique ID:', id);
+
         const newProblem = new Problem({ id, name, email, problem, img: imgUrl });
+        console.log('New problem object:', newProblem);
+
         await newProblem.save();
+        console.log('Problem saved successfully.');
+
         res.status(200).json({ message: 'Problem added successfully' });
     } catch (error) {
-        console.error('Error occurred while adding problem:', error);
+        console.error('Error occurred while adding problem:', JSON.stringify(error, null, 2));
         res.status(500).json({ message: 'Error adding problem' });
     }
 };
+
 
 export const getProblem = async (req, res) => {
     try {
