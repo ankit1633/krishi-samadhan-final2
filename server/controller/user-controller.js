@@ -13,7 +13,7 @@ import axios from 'axios';
 import { ObjectId } from 'mongodb';
 import cookieParser from 'cookie-parser';
 import path from 'path';
-import dataUriToBuffer from 'data-uri-to-buffer';
+const dataUriToBuffer = require('data-uri-to-buffer');
 dotenv.config();
 
 const apiKey = process.env.WEATHER_API_KEY;
@@ -347,16 +347,26 @@ export const addProblem = async (req, res) => {
             // Ensure req.file exists and is a file object with buffer
             const createImage = async (img) => {
                 try {
-                    // Convert buffer to data URI format and then to buffer
-                    const extension = path.extname(img.originalname).toString();
+                    // Convert buffer to data URI format
+                    const extension = path.extname(img.originalname).toString().slice(1); // Remove the dot
                     const base64Image = `data:image/${extension};base64,${img.buffer.toString('base64')}`;
-                    
+
                     // Use data-uri-to-buffer to convert data URI to buffer
                     const buffer = dataUriToBuffer(base64Image);
 
                     // Upload image to Cloudinary
-                    const result = await cloudinary.uploader.upload(buffer, { resource_type: 'image' });
-                    imgUrl = result.secure_url; // Get the URL of the uploaded image
+                    const result = await cloudinary.v2.uploader.upload_stream({ resource_type: 'image' }, (error, result) => {
+                        if (error) {
+                            console.error('Error uploading image to Cloudinary:', error);
+                            throw new Error('Error uploading image');
+                        } else {
+                            imgUrl = result.secure_url;
+                        }
+                    });
+
+                    // Pass the buffer to the Cloudinary upload stream
+                    buffer.pipe(result);
+
                 } catch (uploadError) {
                     console.error('Error uploading image to Cloudinary:', uploadError);
                     throw new Error('Error uploading image');
@@ -379,6 +389,7 @@ export const addProblem = async (req, res) => {
         res.status(500).json({ message: 'Error adding problem' });
     }
 };
+
 export const getProblem = async (req, res) => {
     try {
         // Fetch problems where answer is either an empty string or not set
