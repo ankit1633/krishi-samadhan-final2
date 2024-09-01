@@ -12,7 +12,8 @@ import dotenv from 'dotenv';
 import axios from 'axios';
 import { ObjectId } from 'mongodb';
 import cookieParser from 'cookie-parser';
-
+import path from 'path';
+import parser from 'data-uri-parser';
 dotenv.config();
 
 const apiKey = process.env.WEATHER_API_KEY;
@@ -343,9 +344,19 @@ export const addProblem = async (req, res) => {
         let imgUrl = '';
 
         if (req.file) {
-            // Upload image to Cloudinary
-            const result = await cloudinary.uploader.upload(req.file.path);
-            imgUrl = result.secure_url; // Get the URL of the uploaded image
+            // Ensure req.file exists and is a file object with buffer
+            const createImage = async (img) => {
+                try {
+                    const base64Image = parser.format(path.extname(img.originalname).toString(), img.buffer);
+                    const result = await cloudinary.uploader.upload(base64Image.content, { resource_type: 'image' });
+                    imgUrl = result.secure_url; // Get the URL of the uploaded image
+                } catch (uploadError) {
+                    console.error('Error uploading image to Cloudinary:', uploadError);
+                    throw new Error('Error uploading image');
+                }
+            };
+
+            await createImage(req.file); // Call the createImage function
         }
 
         if (!problem || !problem.trim()) {
