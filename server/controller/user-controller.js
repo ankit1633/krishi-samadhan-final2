@@ -347,12 +347,15 @@ export const addProblem = async (req, res) => {
             // Ensure req.file exists and is a file object with buffer
             const createImage = async (img) => {
                 try {
-                    // Convert buffer to base64 data URI format
-                    const base64Image = new DataURI();
-                    const formattedImage = base64Image.format(path.extname(img.originalname).toString(), img.buffer);
+                    // Convert buffer to data URI format and then to buffer
+                    const extension = path.extname(img.originalname).toString();
+                    const base64Image = `data:image/${extension};base64,${img.buffer.toString('base64')}`;
                     
+                    // Use data-uri-to-buffer to convert data URI to buffer
+                    const buffer = dataUriToBuffer(base64Image);
+
                     // Upload image to Cloudinary
-                    const result = await cloudinary.uploader.upload(formattedImage.content, { resource_type: 'image' });
+                    const result = await cloudinary.uploader.upload(buffer, { resource_type: 'image' });
                     imgUrl = result.secure_url; // Get the URL of the uploaded image
                 } catch (uploadError) {
                     console.error('Error uploading image to Cloudinary:', uploadError);
@@ -376,7 +379,6 @@ export const addProblem = async (req, res) => {
         res.status(500).json({ message: 'Error adding problem' });
     }
 };
-
 export const getProblem = async (req, res) => {
     try {
         // Fetch problems where answer is either an empty string or not set
