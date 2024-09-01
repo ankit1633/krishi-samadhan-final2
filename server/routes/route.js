@@ -33,7 +33,7 @@ router.post('/add-warehouse', authenticateToken, addWarehouse);
 router.get('/get-warehouse', authenticateToken, getWarehouse);
 router.post('/answer', authenticateToken, addAnswer);
 router.get('/answers', getAnswer);
-router.post('/problems', authenticateToken, upload.single('img'), addProblem); // Handle file upload
+router.post('/problems', upload.single('img'), addProblem); // Handle file upload
 router.get('/problems', authenticateToken, getProblem);
 router.post('/answer-problem', authenticateToken, addProblemAnswer);
 router.get('/solutions', authenticateToken, getSolution);

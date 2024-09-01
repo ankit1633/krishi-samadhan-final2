@@ -13,9 +13,11 @@ import axios from 'axios';
 import { ObjectId } from 'mongodb';
 import cookieParser from 'cookie-parser';
 import path from 'path';
-import dataUriToBuffer from 'data-uri-to-buffer';
-dotenv.config();
+import multer from 'multer';
 
+dotenv.config();
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 const apiKey = process.env.WEATHER_API_KEY;
 
 export const userSignup = async (req, res) => {
@@ -334,33 +336,28 @@ export const getAnswer = async (request, response) => {
     }
 };
 
-export const addProblem = async (req, res) => {
-    const generateUniqueId = () => {
-        return new ObjectId().toHexString();
-    };
+const generateUniqueId = () => new ObjectId().toHexString();
 
+const createImage = async (img) => {
+    try {
+        const extension = path.extname(img.originalname).slice(1); // Remove the dot
+        const base64Image = `data:image/${extension};base64,${img.buffer.toString('base64')}`;
+        const result = await cloudinary.v2.uploader.upload(base64Image, { resource_type: 'image' });
+        return result.secure_url;
+    } catch (uploadError) {
+        console.error('Error uploading image to Cloudinary:', uploadError);
+        throw new Error('Error uploading image');
+    }
+};
+
+
+export const addProblem = async (req, res) => {
     try {
         const { name, email, problem } = req.body;
         let imgUrl = '';
 
         if (req.file) {
-            // Ensure req.file exists and is a file object with buffer
-            const createImage = async (img) => {
-                try {
-                    // Convert buffer to data URI format
-                    const extension = path.extname(img.originalname).toString().slice(1); // Remove the dot
-                    const base64Image = `data:image/${extension};base64,${img.buffer.toString('base64')}`;
-
-                    // Upload image to Cloudinary
-                    const result = await cloudinary.v2.uploader.upload(base64Image, { resource_type: 'image' });
-                    imgUrl = result.secure_url; // Get the URL of the uploaded image
-                } catch (uploadError) {
-                    console.error('Error uploading image to Cloudinary:', uploadError);
-                    throw new Error('Error uploading image');
-                }
-            };
-
-            await createImage(req.file); // Call the createImage function
+            imgUrl = await createImage(req.file);
         }
 
         if (!problem || !problem.trim()) {

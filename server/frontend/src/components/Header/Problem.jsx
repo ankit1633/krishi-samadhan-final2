@@ -56,12 +56,12 @@ const Problem = ({ openProblem, setProblemDialog }) => {
     const { user } = useContext(DataContext);
     const [problem, setProblem] = useState({ name: '', email: '', problem: '', img: null });
     const [error, setError] = useState('');
-    const [successMessage, setSuccessMessage] = useState(false); // State for success message
-  
+    const [successMessage, setSuccessMessage] = useState(false);
+
     const onFileChange = (e) => {
         setProblem({ ...problem, img: e.target.files[0] });
     };
-  
+
     const onValueChange = (e) => {
         setProblem({ ...problem, [e.target.name]: e.target.value });
     };
@@ -75,7 +75,7 @@ const Problem = ({ openProblem, setProblemDialog }) => {
     const handleSnackbarClose = () => {
         setSuccessMessage(false);
     };
-  
+
     const addProblem = async () => {
         try {
             const formData = new FormData();
@@ -85,10 +85,10 @@ const Problem = ({ openProblem, setProblemDialog }) => {
             if (problem.img) {
                 formData.append('img', problem.img);
             }
-  
+
             const response = await authenticateProblem(formData);
             if (response.status === 200) {
-                setSuccessMessage(true); // Show success message
+                setSuccessMessage(true);
                 handleClose();
             } else {
                 setError(response.data.message || 'Error adding problem');
@@ -98,8 +98,7 @@ const Problem = ({ openProblem, setProblemDialog }) => {
             setError('Error adding problem');
         }
     };
-  
-    // Check if all fields are filled
+
     const isButtonEnabled = problem.name && problem.email && problem.problem;
 
     return (
@@ -112,8 +111,8 @@ const Problem = ({ openProblem, setProblemDialog }) => {
                         name="name"
                         label="Enter name"
                         required
-                        InputLabelProps={{ style: { color: '#00796b' } }} // Teal label color
-                        InputProps={{ style: { color: '#00796b' } }} // Teal input text color
+                        InputLabelProps={{ style: { color: '#00796b' } }}
+                        InputProps={{ style: { color: '#00796b' } }}
                     />
                     <TextField
                         variant="standard"
@@ -121,8 +120,8 @@ const Problem = ({ openProblem, setProblemDialog }) => {
                         name="email"
                         label="Enter email"
                         required
-                        InputLabelProps={{ style: { color: '#00796b' } }} // Teal label color
-                        InputProps={{ style: { color: '#00796b' } }} // Teal input text color
+                        InputLabelProps={{ style: { color: '#00796b' } }}
+                        InputProps={{ style: { color: '#00796b' } }}
                     />
                     <TextField
                         variant="standard"
@@ -132,14 +131,14 @@ const Problem = ({ openProblem, setProblemDialog }) => {
                         multiline
                         rows={8}
                         required
-                        InputLabelProps={{ style: { color: '#00796b' } }} // Teal label color
-                        InputProps={{ style: { color: '#00796b' } }} // Teal input text color
+                        InputLabelProps={{ style: { color: '#00796b' } }}
+                        InputProps={{ style: { color: '#00796b' } }}
                     />
                     <input
                         type="file"
                         name="img"
                         onChange={onFileChange}
-                        style={{ marginTop: '10px' }} // Margin for spacing
+                        style={{ marginTop: '10px' }}
                     />
                     {error && <Error>{error}</Error>}
                     <LoginButton onClick={addProblem} enabled={isButtonEnabled}>
@@ -153,7 +152,6 @@ const Problem = ({ openProblem, setProblemDialog }) => {
                     </Box>
                 </ContentBox>
             )}
-            {/* Snackbar for success message */}
             <Snackbar open={successMessage} autoHideDuration={6000} onClose={handleSnackbarClose}>
                 <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
                     Problem added successfully!
