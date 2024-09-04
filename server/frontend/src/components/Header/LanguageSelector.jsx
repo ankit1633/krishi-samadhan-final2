@@ -51,7 +51,7 @@ const LanguageSelector = () => {
       setCookie('i18next', newLanguage, 365);
     });
   };
-//hiasdas
+//
   return (
     <Box>
       <FormControl fullWidth>
