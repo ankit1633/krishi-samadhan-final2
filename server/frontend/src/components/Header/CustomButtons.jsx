@@ -1,5 +1,19 @@
 import React, { useState, useContext } from 'react';
-import { Box, Button, Typography, styled, Menu, MenuItem, IconButton, Drawer, List, ListItem, ListItemText, Dialog, DialogTitle } from '@mui/material';
+import {
+    Box,
+    Button,
+    Typography,
+    styled,
+    Menu,
+    MenuItem,
+    IconButton,
+    Drawer,
+    List,
+    ListItem,
+    ListItemText,
+    Dialog,
+    DialogTitle
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import LoginDialog from '../login/LoginDialog';
 import Profile from './Profile';
@@ -182,10 +196,10 @@ const CustomButtons = () => {
                     </>
                 ) : null}
 
-                {user && (
+                {1 && (
                     <>
                         <LoginButton variant='contained' onClick={handleClick}>
-                            <Typography>Q&A</Typography>
+                            <Typography>{t('qa')}</Typography>
                         </LoginButton>
                         <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
                             <MenuItem onClick={() => { openQuestionDialog(); handleClose(); }}>
