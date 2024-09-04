@@ -35,14 +35,14 @@ const ContentBox = styled(Box)`
 // Styled Button component
 const LoginButton = styled(Button)`
   text-transform: none;
-  background: ${({ enabled }) => (enabled ? '#fdd835' : '#f0f0f0')}; /* Light yellow background for enabled state */
-  color: ${({ enabled }) => (enabled ? '#000000' : '#bdbdbd')}; /* Black text color for enabled state */
+  background: ${({ enabled }) => (enabled ? '#fdd835' : '#d3d3d3')}; /* Change the background to a more visible light gray when disabled */
+  color: ${({ enabled }) => (enabled ? '#000000' : '#808080')}; /* Change text color to a darker gray when disabled */
   height: 48px;
   border-radius: 2px;
   margin-top: 20px;
   &:hover {
-    background: ${({ enabled }) => (enabled ? '#fbc02d' : '#e0e0e0')}; /* Darker yellow on hover */
-    color: #000000; /* Black text color on hover for better contrast */
+    background: ${({ enabled }) => (enabled ? '#fbc02d' : '#d3d3d3')}; /* Maintain visible color when hovering */
+    color: #000000; /* Ensure the text color remains black on hover for contrast */
   }
   @media (max-width: 600px) {
     height: 40px; /* Smaller height on small screens */

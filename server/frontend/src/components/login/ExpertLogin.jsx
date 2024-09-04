@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Dialog, TextField, Box, Typography, Button, styled, Snackbar, Alert } from '@mui/material';
 import { authenticateExpertLogin } from '../../service/api.js';
 import { DataContext } from '../../context/DataProvider.jsx';
+import { useTranslation } from 'react-i18next';  // Import useTranslation hook
 
 const LoginButton = styled(Button)`
     text-transform: none;
@@ -37,6 +38,7 @@ const expertLoginInitialValues = {
 
 const ExpertLogin = ({ open, onClose, onSuccess }) => {
     const { setAccount, setUser, updateUser } = useContext(DataContext);
+    const { t } = useTranslation();  // Use the translation hook
     const [expertLogin, setExpertLogin] = useState(expertLoginInitialValues);
     const [error, setError] = useState(false);
     const [success, setSuccess] = useState(false); // State for managing success snackbar
@@ -78,19 +80,19 @@ const ExpertLogin = ({ open, onClose, onSuccess }) => {
                         variant="standard"
                         onChange={onValueChange}
                         name='username'
-                        label='Enter Email/Mobile number'
+                        label={t('enter_email_or_mobile')}
                         value={expertLogin.username} // Bind value to state
                     />
-                    {error && <Error>Please enter valid Email ID/Mobile number</Error>}
+                    {error && <Error>{t('invalid_email_or_mobile')}</Error>}
                     <TextField
                         variant="standard"
                         onChange={onValueChange}
                         name='password'
-                        label='Enter Password'
+                        label={t('enter_password')}
                         type="password"
                         value={expertLogin.password} // Bind value to state
                     />
-                    <LoginButton onClick={loginExpert}>Login</LoginButton>
+                    <LoginButton onClick={loginExpert}>{t('login')}</LoginButton>
                 </Wrapper>
             </Dialog>
 
@@ -102,7 +104,7 @@ const ExpertLogin = ({ open, onClose, onSuccess }) => {
                 anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
             >
                 <Alert onClose={() => setSuccess(false)} severity="success" sx={{ width: '100%' }}>
-                    Successfully logged in!
+                    {t('success_message')}
                 </Alert>
             </Snackbar>
         </>

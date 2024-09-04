@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Dialog, TextField, Box, Typography, Button, styled, Snackbar, Alert } from '@mui/material';
 import { authenticateDistributorSignup, authenticateDistributorLogin } from '../../service/api.js';
 import { DataContext } from '../../context/DataProvider.jsx';
+import { useTranslation } from 'react-i18next';  // Import useTranslation hook
 
 const LoginButton = styled(Button)`
   text-transform: none;
@@ -74,6 +75,7 @@ const accountInitialValues = {
 
 const DistributorLogin = ({ open, onClose, onSuccess }) => {
   const { setAccount, updateUser } = useContext(DataContext);
+  const { t } = useTranslation();  // Use the translation hook
   const [account, toggleAccount] = useState(accountInitialValues.login);
   const [signup, setSignup] = useState(signupInitialValues);
   const [login, setLogin] = useState(loginInitialValues);
@@ -131,24 +133,24 @@ const DistributorLogin = ({ open, onClose, onSuccess }) => {
       <Dialog open={open} onClose={handleClose}>
         {account.view === 'login' ? (
           <Wrapper>
-            <TextField variant="standard" onChange={onValueChange} name='email' label='Enter Email' />
-            {error && <Error>Please enter valid Email</Error>}
-            <TextField variant="standard" onChange={onValueChange} name='password' label='Enter Password' type="password" />
-            <Text>By continuing, you agree to Krishi-samadhan's Terms of Use and Privacy Policy.</Text>
-            <LoginButton onClick={loginDistributor}>Login</LoginButton>
-            <Text style={{ textAlign: 'center' }}>OR</Text>
-            <RequestOTP>Request OTP</RequestOTP>
-            <CreateAccount onClick={toggleSignup}>New to Krishi-samadhan? Create an account</CreateAccount>
+            <TextField variant="standard" onChange={onValueChange} name='email' label={t('enter_email')} />
+            {error && <Error>{t('invalid_email')}</Error>}
+            <TextField variant="standard" onChange={onValueChange} name='password' label={t('enter_password')} type="password" />
+            <Text>{t('terms_and_conditions')}</Text>
+            <LoginButton onClick={loginDistributor}>{t('login')}</LoginButton>
+            <Text style={{ textAlign: 'center' }}>{t('or')}</Text>
+            <RequestOTP>{t('request_otp')}</RequestOTP>
+            <CreateAccount onClick={toggleSignup}>{t('create_account')}</CreateAccount>
           </Wrapper>
         ) : (
           <Wrapper>
-            <TextField variant="standard" onChange={onInputChange} name='firstname' label='Enter Firstname' />
-            <TextField variant="standard" onChange={onInputChange} name='lastname' label='Enter Lastname' />
-            <TextField variant="standard" onChange={onInputChange} name='username' label='Enter Username' />
-            <TextField variant="standard" onChange={onInputChange} name='email' label='Enter Email' />
-            <TextField variant="standard" onChange={onInputChange} name='password' label='Enter Password' type="password" />
-            <TextField variant="standard" onChange={onInputChange} name='phone' label='Enter Phone' />
-            <LoginButton onClick={signupDistributor}>Continue</LoginButton>
+            <TextField variant="standard" onChange={onInputChange} name='firstname' label={t('enter_firstname')} />
+            <TextField variant="standard" onChange={onInputChange} name='lastname' label={t('enter_lastname')} />
+            <TextField variant="standard" onChange={onInputChange} name='username' label={t('enter_username')} />
+            <TextField variant="standard" onChange={onInputChange} name='email' label={t('enter_email')} />
+            <TextField variant="standard" onChange={onInputChange} name='password' label={t('enter_password')} type="password" />
+            <TextField variant="standard" onChange={onInputChange} name='phone' label={t('enter_phone')} />
+            <LoginButton onClick={signupDistributor}>{t('continue')}</LoginButton>
           </Wrapper>
         )}
       </Dialog>
@@ -161,7 +163,7 @@ const DistributorLogin = ({ open, onClose, onSuccess }) => {
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
         <Alert onClose={() => setSuccess(false)} severity="success" sx={{ width: '100%' }}>
-          Successfully logged in!
+          {t('success_message')}
         </Alert>
       </Snackbar>
     </>

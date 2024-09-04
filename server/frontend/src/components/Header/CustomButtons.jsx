@@ -3,15 +3,15 @@ import { Box, Button, Typography, styled, Menu, MenuItem, IconButton, Drawer, Li
 import { useTranslation } from 'react-i18next';
 import LoginDialog from '../login/LoginDialog';
 import Profile from './Profile';
-import Question from './Question';  // Ensure this is correctly implemented
-import Problem from './Problem';    // Ensure this is correctly implemented
+import Question from './Question';
+import Problem from './Problem';
 import Solution from './Solution';
 import Warehouse from './Warehouse';
 import Weather from './Weather';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu';
 import { DataContext } from '../../context/DataProvider';
-import LanguageSelector from './LanguageSelector';  // Ensure this is correctly implemented
+import LanguageSelector from './LanguageSelector';
 
 // Styled components
 const LoginButton = styled(Button)`
@@ -184,8 +184,9 @@ const CustomButtons = () => {
 
                 {user && (
                     <>
-                        <Typography>{t('qa')}</Typography>
-                        
+                        <LoginButton variant='contained' onClick={handleClick}>
+                            <Typography>Q&A</Typography>
+                        </LoginButton>
                         <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
                             <MenuItem onClick={() => { openQuestionDialog(); handleClose(); }}>
                                 {user === "expert" ? t('answer_question') : t('ask_question')}

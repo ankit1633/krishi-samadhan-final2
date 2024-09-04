@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Dialog, Box, styled } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import FarmerLogin from './FarmerLogin';
 import ExpertLogin from './ExpertLogin';
 import DistributorLogin from './DistributorLogin';
@@ -31,6 +32,7 @@ const StyledButton = styled(Button)`
 `;
 
 const LoginDialog = ({ open, setOpen }) => {
+  const { t } = useTranslation();
   const [farmerLogin, setFarmerLogin] = useState(false);
   const [expertLogin, setExpertLogin] = useState(false);
   const [distributorLogin, setDistributorLogin] = useState(false);
@@ -61,9 +63,15 @@ const LoginDialog = ({ open, setOpen }) => {
   return (
     <StyledDialog open={open} onClose={handleClose}>
       <ContentBox>
-        <StyledButton variant='contained' onClick={openFarmerLoginDialog}>Farmer Login</StyledButton>
-        <StyledButton variant='contained' onClick={openExpertLoginDialog}>Expert Login</StyledButton>
-        <StyledButton variant='contained' onClick={openDistributorLoginDialog}>Distributor Login</StyledButton>
+        <StyledButton variant='contained' onClick={openFarmerLoginDialog}>
+          {t('farmer_login')}
+        </StyledButton>
+        <StyledButton variant='contained' onClick={openExpertLoginDialog}>
+          {t('expert_login')}
+        </StyledButton>
+        <StyledButton variant='contained' onClick={openDistributorLoginDialog}>
+          {t('distributor_login')}
+        </StyledButton>
       </ContentBox>
       <FarmerLogin open={farmerLogin} onClose={() => setFarmerLogin(false)} onSuccess={handleSuccess} />
       <ExpertLogin open={expertLogin} onClose={() => setExpertLogin(false)} onSuccess={handleSuccess} />

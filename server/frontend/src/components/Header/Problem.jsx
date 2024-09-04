@@ -32,19 +32,19 @@ const ContentBox = styled(Box)(({ theme }) => ({
 
 const LoginButton = styled(Button)(({ theme, enabled }) => ({
     textTransform: 'none',
-    background: enabled ? '#fdd835' : '#f0f0f0', // Light yellow background for enabled state
-    color: enabled ? '#000000' : '#bdbdbd', // Black text color for enabled state
+    background: enabled ? '#fdd835' : '#d3d3d3', // Change the background to a more visible light gray when disabled
+    color: enabled ? '#000000' : '#808080', // Change text color to a darker gray when disabled
     height: '48px',
     borderRadius: '2px',
     marginTop: '20px',
     '&:hover': {
-        background: enabled ? '#fbc02d' : '#e0e0e0', // Darker yellow on hover
-        color: '#000000', // Black text color on hover for better contrast
+        background: enabled ? '#fbc02d' : '#d3d3d3', // Maintain visible color when hovering
+        color: '#000000', // Ensure the text color remains black on hover for contrast
     },
     [theme.breakpoints.down('sm')]: {
         width: '100%', // Full width on small screens
         fontSize: '14px', // Adjust font size for better readability on smaller screens
-    },
+    },
 }));
 
 const Error = styled(Typography)`

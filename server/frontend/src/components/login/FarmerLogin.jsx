@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Dialog, TextField, Box, Typography, Button, styled, Snackbar, Alert } from '@mui/material';
 import { authenticateSignup, authenticateLogin } from '../../service/api';
 import { DataContext } from '../../context/DataProvider';
+import { useTranslation } from 'react-i18next';  // Import useTranslation hook
 
 const LoginButton = styled(Button)`
   text-transform: none;
@@ -74,6 +75,7 @@ const accountInitialValues = {
 
 const FarmerLogin = ({ open, onClose, onSuccess }) => {
   const { setAccount, updateUser } = useContext(DataContext);
+  const { t } = useTranslation();  // Use the translation hook
   const [account, toggleAccount] = useState(accountInitialValues.login);
   const [signup, setSignup] = useState(signupInitialValues);
   const [login, setLogin] = useState(loginInitialValues);
@@ -146,25 +148,25 @@ const FarmerLogin = ({ open, onClose, onSuccess }) => {
               variant="standard"
               onChange={onValueChange}
               name="email"
-              label="Enter Email"
+              label={t('enter_email')}
               fullWidth
             />
-            {error && <Error>Please enter valid Email and Password</Error>}
+            {error && <Error>{t('invalid_email_password')}</Error>}
             <TextField
               variant="standard"
               onChange={onValueChange}
               name="password"
-              label="Enter Password"
+              label={t('enter_password')}
               type="password"
               fullWidth
             />
             <Text>
-              By continuing, you agree to Krishi-samadhan's Terms of Use and Privacy Policy.
+              {t('terms_and_conditions')}
             </Text>
-            <LoginButton onClick={loginUser} fullWidth>Login</LoginButton>
-            <Text style={{ textAlign: 'center' }}>OR</Text>
-            <RequestOTP>Request OTP</RequestOTP>
-            <CreateAccount onClick={toggleSignup}>New to Krishi-samadhan? Create an account</CreateAccount>
+            <LoginButton onClick={loginUser} fullWidth>{t('login')}</LoginButton>
+            <Text style={{ textAlign: 'center' }}>{t('or')}</Text>
+            <RequestOTP>{t('request_otp')}</RequestOTP>
+            <CreateAccount onClick={toggleSignup}>{t('create_account')}</CreateAccount>
           </>
         ) : (
           <>
@@ -172,35 +174,35 @@ const FarmerLogin = ({ open, onClose, onSuccess }) => {
               variant="standard"
               onChange={onInputChange}
               name="firstname"
-              label="Enter Firstname"
+              label={t('enter_firstname')}
               fullWidth
             />
             <TextField
               variant="standard"
               onChange={onInputChange}
               name="lastname"
-              label="Enter Lastname"
+              label={t('enter_lastname')}
               fullWidth
             />
             <TextField
               variant="standard"
               onChange={onInputChange}
               name="username"
-              label="Enter Username"
+              label={t('enter_username')}
               fullWidth
             />
             <TextField
               variant="standard"
               onChange={onInputChange}
               name="email"
-              label="Enter Email"
+              label={t('enter_email')}
               fullWidth
             />
             <TextField
               variant="standard"
               onChange={onInputChange}
               name="password"
-              label="Enter Password"
+              label={t('enter_password')}
               type="password"
               fullWidth
             />
@@ -208,10 +210,10 @@ const FarmerLogin = ({ open, onClose, onSuccess }) => {
               variant="standard"
               onChange={onInputChange}
               name="phone"
-              label="Enter Phone"
+              label={t('enter_phone')}
               fullWidth
             />
-            <LoginButton onClick={signupUser} fullWidth>Continue</LoginButton>
+            <LoginButton onClick={signupUser} fullWidth>{t('continue')}</LoginButton>
           </>
         )}
       </Wrapper>
@@ -224,7 +226,7 @@ const FarmerLogin = ({ open, onClose, onSuccess }) => {
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
         <Alert onClose={() => setSuccess(false)} severity="success" sx={{ width: '100%' }}>
-          Successfully logged in!
+          {t('success_message')}
         </Alert>
       </Snackbar>
     </Dialog>
