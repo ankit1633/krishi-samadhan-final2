@@ -196,7 +196,7 @@ const CustomButtons = () => {
                     </>
                 ) : null}
 
-                {user && (
+                {1 && (
                     <>
                         <LoginButton variant='contained' onClick={handleClick}>
                             <Typography>{t('qa')}</Typography>
