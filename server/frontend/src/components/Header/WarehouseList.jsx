@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { authenticateGetWarehouse } from '../../service/api.js';
+import { useTranslation } from 'react-i18next';
 
 const WarehouseList = () => {
+    const { t } = useTranslation(); // Use translation hook
     const [warehouses, setWarehouses] = useState([]);
     const [error, setError] = useState(null);
 
@@ -13,34 +15,34 @@ const WarehouseList = () => {
                 if (response.status === 200) {
                     setWarehouses(response.data.data);
                 } else {
-                    setError('Error loading warehouses');
+                    setError(t('error_loading_warehouses')); // Use translation key
                 }
             } catch (error) {
-                console.error("Error occurred while fetching warehouses:", error);
-                setError('Error loading warehouses');
+                console.error(t('error_loading_warehouses_network'), error); // Use translation key
+                setError(t('error_loading_warehouses_network')); // Use translation key
             }
         };
 
         fetchWarehouses();
-    }, []); // Empty dependency array ensures useEffect runs only once
+    }, [t]); // Added translation key dependency
 
     return (
         <TableContainer component={Paper} sx={{ boxShadow: 2, overflowX: 'auto' }}>
             <Table>
                 <TableHead sx={{ backgroundColor: '#f0f0f0' }}>
                     <TableRow>
-                        <TableCell>Name</TableCell>
-                        <TableCell>Email</TableCell>
-                        <TableCell>Address</TableCell>
-                        <TableCell>Contact</TableCell>
-                        <TableCell>Capacity</TableCell>
-                        <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>Price</TableCell>
+                        <TableCell>{t('name')}</TableCell> {/* Use translation key */}
+                        <TableCell>{t('email')}</TableCell> {/* Use translation key */}
+                        <TableCell>{t('address')}</TableCell> {/* Use translation key */}
+                        <TableCell>{t('contact')}</TableCell> {/* Use translation key */}
+                        <TableCell>{t('capacity')}</TableCell> {/* Use translation key */}
+                        <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>{t('price')}</TableCell> {/* Use translation key */}
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {error ? (
                         <TableRow>
-                            <TableCell colSpan={7}>
+                            <TableCell colSpan={6}>
                                 <Typography>{error}</Typography>
                             </TableCell>
                         </TableRow>

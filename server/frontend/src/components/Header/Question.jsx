@@ -3,6 +3,7 @@ import { Box, Typography, TextField, Button, styled, Dialog, Snackbar, Alert } f
 import { authenticateQuestion } from '../../service/api.js';
 import DataProvider, { DataContext } from '../../context/DataProvider.jsx';
 import QuestionList from './QuestionList.jsx';
+import { useTranslation } from 'react-i18next';
 
 // Styled Dialog component
 const StyledDialog = styled(Dialog)`
@@ -57,6 +58,7 @@ const Error = styled(Typography)`
 `;
 
 const Question = ({ openQuestion, setQuestionDialog }) => {
+    const { t } = useTranslation();
     const { user } = useContext(DataContext);
     const [question, setQuestion] = useState({ name: '', email: '', question: '' });
     const [error, setError] = useState('');
@@ -84,11 +86,11 @@ const Question = ({ openQuestion, setQuestionDialog }) => {
                 handleClose();
                 console.log(response.data);
             } else {
-                setError(response.data.message || 'Error adding question');
+                setError(response.data.message || t('error_adding_question'));
             }
         } catch (error) {
-            console.error("Error occurred while adding question:", error);
-            setError('Error adding question');
+            console.error(t('error_occurred_while_adding_question'), error);
+            setError(t('error_adding_question'));
         }
     };
 
@@ -101,7 +103,7 @@ const Question = ({ openQuestion, setQuestionDialog }) => {
                             variant="standard"
                             onChange={onValueChange}
                             name="name"
-                            label="Enter name"
+                            label={t('enter_name')}
                             InputLabelProps={{ style: { color: '#00796b' } }} // Teal label color
                             InputProps={{ style: { color: '#00796b' } }} // Teal input text color
                             sx={{ 
@@ -113,7 +115,7 @@ const Question = ({ openQuestion, setQuestionDialog }) => {
                             variant="standard"
                             onChange={onValueChange}
                             name="email"
-                            label="Enter email"
+                            label={t('enter_email')}
                             InputLabelProps={{ style: { color: '#00796b' } }} // Teal label color
                             InputProps={{ style: { color: '#00796b' } }} // Teal input text color
                             sx={{ 
@@ -125,7 +127,7 @@ const Question = ({ openQuestion, setQuestionDialog }) => {
                             variant="standard"
                             onChange={onValueChange}
                             name="question"
-                            label="Enter question"
+                            label={t('enter_question')}
                             multiline
                             rows={8}
                             InputLabelProps={{ style: { color: '#00796b' } }} // Teal label color
@@ -136,7 +138,9 @@ const Question = ({ openQuestion, setQuestionDialog }) => {
                             }}
                         />
                         {error && <Error>{error}</Error>}
-                        <LoginButton onClick={addQuestion}>Continue</LoginButton>
+                        <LoginButton onClick={addQuestion} enabled={question.name && question.email && question.question}>
+                            {t('continue')} {/* Use translation key */}
+                        </LoginButton>
                     </ContentBox>
                 ) : (
                     <ContentBox>
@@ -155,7 +159,7 @@ const Question = ({ openQuestion, setQuestionDialog }) => {
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
             >
                 <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
-                    Question added successfully!
+                    {t('question_added_successfully')} {/* Use translation key */}
                 </Alert>
             </Snackbar>
         </div>

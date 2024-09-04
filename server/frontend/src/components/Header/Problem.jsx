@@ -3,6 +3,7 @@ import { Box, Typography, TextField, Button, styled, Dialog, Snackbar, Alert } f
 import { authenticateProblem } from '../../service/api.js';
 import { DataContext } from '../../context/DataProvider.jsx'; // Updated import path
 import ProblemList from './ProblemList.jsx';
+import { useTranslation } from 'react-i18next';
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
     '.MuiDialog-paper': {
@@ -53,6 +54,7 @@ const Error = styled(Typography)`
 `;
 
 const Problem = ({ openProblem, setProblemDialog }) => {
+    const { t } = useTranslation();
     const { user } = useContext(DataContext);
     const [problem, setProblem] = useState({ name: '', email: '', problem: '', img: null });
     const [error, setError] = useState('');
@@ -91,11 +93,11 @@ const Problem = ({ openProblem, setProblemDialog }) => {
                 setSuccessMessage(true); // Show success message
                 handleClose();
             } else {
-                setError(response.data.message || 'Error adding problem');
+                setError(response.data.message || t('error_adding_problem'));
             }
         } catch (error) {
             console.error('Error occurred while adding problem:', error);
-            setError('Error adding problem');
+            setError(t('error_adding_problem'));
         }
     };
   
@@ -110,7 +112,7 @@ const Problem = ({ openProblem, setProblemDialog }) => {
                         variant="standard"
                         onChange={onValueChange}
                         name="name"
-                        label="Enter name"
+                        label={t('enter_name')}
                         required
                         InputLabelProps={{ style: { color: '#00796b' } }} // Teal label color
                         InputProps={{ style: { color: '#00796b' } }} // Teal input text color
@@ -119,7 +121,7 @@ const Problem = ({ openProblem, setProblemDialog }) => {
                         variant="standard"
                         onChange={onValueChange}
                         name="email"
-                        label="Enter email"
+                        label={t('enter_email')}
                         required
                         InputLabelProps={{ style: { color: '#00796b' } }} // Teal label color
                         InputProps={{ style: { color: '#00796b' } }} // Teal input text color
@@ -128,7 +130,7 @@ const Problem = ({ openProblem, setProblemDialog }) => {
                         variant="standard"
                         onChange={onValueChange}
                         name="problem"
-                        label="Describe your problem"
+                        label={t('describe_problem')}
                         multiline
                         rows={8}
                         required
@@ -143,7 +145,7 @@ const Problem = ({ openProblem, setProblemDialog }) => {
                     />
                     {error && <Error>{error}</Error>}
                     <LoginButton onClick={addProblem} enabled={isButtonEnabled}>
-                        Continue
+                        {t('continue')}
                     </LoginButton>
                 </ContentBox>
             ) : (
@@ -156,7 +158,7 @@ const Problem = ({ openProblem, setProblemDialog }) => {
             {/* Snackbar for success message */}
             <Snackbar open={successMessage} autoHideDuration={6000} onClose={handleSnackbarClose}>
                 <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
-                    Problem added successfully!
+                    {t('problem_added_success')}
                 </Alert>
             </Snackbar>
         </StyledDialog>

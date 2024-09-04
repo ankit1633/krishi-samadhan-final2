@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Dialog, TextField, Box, Button, styled, Snackbar, Alert } from '@mui/material';
 import { authenticateAddAnswer } from '../../service/api.js';
+import { useTranslation } from 'react-i18next';
 
 const LoginButton = styled(Button)`
     text-transform: none;
@@ -35,6 +36,7 @@ const answerInitialValue = {
 };
 
 const AnswerQuestion = ({ open, onClose, email, question, selectedQuestion }) => {
+    const { t } = useTranslation();
     const [answer, setAnswer] = useState(answerInitialValue);
     const [successMessage, setSuccessMessage] = useState(false); // State to manage Snackbar visibility
 
@@ -75,13 +77,15 @@ const AnswerQuestion = ({ open, onClose, email, question, selectedQuestion }) =>
                         variant="standard"
                         onChange={(e) => onValueChange(e)}
                         name='body'
-                        label='Enter answer'
+                        label={t('answer_question_label')}
                         value={answer.body}
                         multiline
                         rows={4}
                         fullWidth
                     />
-                    <LoginButton onClick={submitAnswer}>Submit</LoginButton>
+                    <LoginButton onClick={submitAnswer}>
+                        {t('submit')}
+                    </LoginButton>
                 </Wrapper>
             </Dialog>
 
@@ -93,7 +97,7 @@ const AnswerQuestion = ({ open, onClose, email, question, selectedQuestion }) =>
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
             >
                 <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
-                    Answer added successfully!
+                    {t('answer_added_success')}
                 </Alert>
             </Snackbar>
         </div>

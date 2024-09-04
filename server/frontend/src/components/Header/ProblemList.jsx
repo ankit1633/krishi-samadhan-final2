@@ -1,119 +1,124 @@
-import React, { useState, useEffect } from 'react';
-import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Paper, Box } from '@mui/material';
-import { authenticateGetProblem } from '../../service/api.js';
-import AnswerProblem from '../Header/AnswerProblem.jsx';
+import React, { useState } from 'react';
+import { Dialog, TextField, Box, Button, styled, Snackbar, Alert,Typography } from '@mui/material';
+import { authenticateAddAnswer } from '../../service/api.js';
+import { useTranslation } from 'react-i18next';
 
-const ProblemList = () => {
-    const [problems, setProblems] = useState([]);
+const LoginButton = styled(Button)`
+    text-transform: none;
+    background: rgba(245,234,209,0.5);
+    color: #fff;
+    height: 48px;
+    border-radius: 2px;
+    
+    @media (max-width: 600px) { /* Media query for smaller screens like Android phones */
+        height: 40px;
+        font-size: 14px;
+    }
+`;
+
+const Wrapper = styled(Box)`
+    padding: 25px 35px;
+    display: flex;
+    flex: 1;
+    overflow: auto;
+    flex-direction: column;
+    & > div, & > button, & > p {
+        margin-top: 20px;
+    }
+
+    @media (max-width: 600px) { /* Media query for smaller screens like Android phones */
+        padding: 15px 20px;
+    }
+`;
+
+const answerInitialValue = {
+    body: ''
+};
+
+const AnswerQuestion = ({ open, onClose, email, question }) => {
+    const { t } = useTranslation();
+    const [answer, setAnswer] = useState(answerInitialValue);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [openAnswerDialog, setOpenAnswerDialog] = useState(false);
-    const [selectedProblem, setSelectedProblem] = useState({ email: '', problem: '' });
-    const [selectedImage, setSelectedImage] = useState(null);
+    const [successMessage, setSuccessMessage] = useState(false); // State to manage Snackbar visibility
 
-    useEffect(() => {
-        const fetchProblems = async () => {
-            try {
-                const response = await authenticateGetProblem();
-                if (response.status === 200) {
-                    setProblems(response.data.data);
-                } else {
-                    setError('Error loading problems');
-                }
-            } catch (error) {
-                console.error("Error occurred while fetching problems :", error);
-                setError('Error loading problems');
+    const onValueChange = (e) => {
+        setAnswer({ ...answer, [e.target.name]: e.target.value });
+    };
+
+    const submitAnswer = async () => {
+        setLoading(true);
+        setError(null);
+
+        try {
+            const response = await authenticateAddAnswer({
+                body: answer.body,
+                question: question
+            });
+
+            if (response.status === 200) {
+                setSuccessMessage(true); // Show success message
+                handleClose(); // Close the dialog on successful submission
+            } else {
+                setError(t('submission_failed')); // Use translation key for error message
             }
-        };
-
-        fetchProblems();
-    }, []);
-
-    const handleOpenAnswerDialog = (email, problem) => {
-        setSelectedProblem({ email, problem });
-        setOpenAnswerDialog(true);
+        } catch (error) {
+            console.error("Error occurred while adding answer:", error);
+            setError(t('submission_error')); // Use translation key for error message
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const handleCloseAnswerDialog = () => {
-        setOpenAnswerDialog(false);
-        setSelectedProblem({ email: '', problem: '' });
+    const handleClose = () => {
+        onClose(); // Close the dialog
+        setAnswer(answerInitialValue); // Reset answer form fields
     };
 
-    const handleOpenImage = (imageUrl) => {
-        setSelectedImage(imageUrl);
-    };
-
-    const handleCloseImage = () => {
-        setSelectedImage(null);
+    const handleSnackbarClose = () => {
+        setSuccessMessage(false); // Hide success message
     };
 
     return (
-        <TableContainer component={Paper} sx={{ boxShadow: 2, maxWidth: '100%', overflowX: 'auto' }}>
-            <Table sx={{ minWidth: 650 }}>
-                <TableHead sx={{ backgroundColor: '#f0f0f0' }}>
-                    <TableRow>
-                        <TableCell>User Email</TableCell>
-                        <TableCell>Problem</TableCell>
-                        <TableCell>Action</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {error ? (
-                        <TableRow>
-                            <TableCell colSpan={4}>
-                                <Typography>{error}</Typography>
-                            </TableCell>
-                        </TableRow>
-                    ) : (
-                        problems.map(problem => (
-                            <TableRow key={problem._id} sx={{ '&:nth-of-type(odd)': { backgroundColor: '#f9f9f9' } }}>
-                                <TableCell>{problem.email}</TableCell>
-                                <TableCell>{problem.problem}</TableCell>
-                                <TableCell>
-                                    {problem.img && (
-                                        <Button
-                                            variant='contained'
-                                            onClick={() => handleOpenImage(problem.img)}
-                                            sx={{ fontSize: '0.75rem', padding: '6px 12px' }} // Smaller button on small screens
-                                        >
-                                            Open image
-                                        </Button>
-                                    )}
-                                    {selectedImage === problem.img && (
-                                        <Box mt={2}>
-                                            <img
-                                                src={selectedImage}
-                                                alt="Problem Image"
-                                                style={{ maxWidth: '100%', height: 'auto' }}
-                                            />
-                                            <Button onClick={handleCloseImage} sx={{ marginTop: 1 }}>
-                                                Close image
-                                            </Button>
-                                        </Box>
-                                    )}
-                                </TableCell>
-                                <TableCell>
-                                    <Button
-                                        onClick={() => handleOpenAnswerDialog(problem.email, problem.problem)}
-                                        variant="contained"
-                                        color="primary"
-                                        sx={{ fontSize: '0.75rem', padding: '6px 12px' }} // Smaller button on small screens
-                                    >
-                                        Answer
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
-                        ))
+        <div>
+            <Dialog open={open} onClose={handleClose}>
+                <Wrapper>
+                    {error && (
+                        <Typography color="error" variant="body2">
+                            {error}
+                        </Typography>
                     )}
-                </TableBody>
-            </Table>
-            <AnswerProblem
-                open={openAnswerDialog}
-                onClose={handleCloseAnswerDialog}
-                email={selectedProblem.email}
-                problem={selectedProblem.problem}
-            />
-        </TableContainer>
+                    <TextField
+                        variant="standard"
+                        onChange={onValueChange}
+                        name='body'
+                        label={t('enter_answer')} // Use translation key for label
+                        value={answer.body}
+                        multiline
+                        rows={4}
+                    />
+                    <LoginButton 
+                        onClick={submitAnswer}
+                        disabled={loading}
+                    >
+                        {loading ? t('submitting') : t('submit')} // Use translation keys for button text
+                    </LoginButton>
+                </Wrapper>
+            </Dialog>
+
+            {/* Snackbar for success message */}
+            <Snackbar
+                open={successMessage}
+                autoHideDuration={6000}
+                onClose={handleSnackbarClose}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            >
+                <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+                    {t('answer_added_success')} // Use translation key for success message
+                </Alert>
+            </Snackbar>
+        </div>
     );
 };
 
-export default ProblemList;
+export default AnswerQuestion;

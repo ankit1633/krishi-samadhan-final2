@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Dialog, TextField, Box, Button, styled, Typography, Snackbar, Alert } from '@mui/material';
 import { authenticateAddProblemAnswer } from '../../service/api.js';
+import { useTranslation } from 'react-i18next';
 
 const LoginButton = styled(Button)`
     text-transform: none;
@@ -37,6 +38,7 @@ const answerInitialValue = {
 };
 
 const AnswerProblem = ({ open, onClose, email, problem }) => {
+    const { t } = useTranslation();
     const [answer, setAnswer] = useState(answerInitialValue);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -64,11 +66,11 @@ const AnswerProblem = ({ open, onClose, email, problem }) => {
                 setSuccessMessage(true); // Show success message
                 handleClose(); // Close the dialog on successful submission
             } else {
-                setError('Submission failed. Please try again.');
+                setError(t('submission_failed')); // Use translation key for error
             }
         } catch (error) {
             console.error("Error occurred while adding answer:", error);
-            setError('An error occurred while submitting your answer.');
+            setError(t('error_occurred')); // Use translation key for error
         } finally {
             setLoading(false);
         }
@@ -96,7 +98,7 @@ const AnswerProblem = ({ open, onClose, email, problem }) => {
                         variant="standard"
                         onChange={onValueChange}
                         name='body'
-                        label='Enter answer'
+                        label={t('enter_answer')} // Use translation key
                         value={answer.body}
                         multiline
                         rows={4}
@@ -105,7 +107,7 @@ const AnswerProblem = ({ open, onClose, email, problem }) => {
                         onClick={submitAnswer}
                         disabled={loading}
                     >
-                        {loading ? 'Submitting...' : 'Submit'}
+                        {loading ? t('submitting') : t('submit')} {/* Use translation keys */}
                     </LoginButton>
                 </Wrapper>
             </Dialog>
@@ -118,7 +120,7 @@ const AnswerProblem = ({ open, onClose, email, problem }) => {
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
             >
                 <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
-                    Answer successfully added!
+                    {t('answer_success')} {/* Use translation key */}
                 </Alert>
             </Snackbar>
         </div>

@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Paper, styled } from '@mui/material';
 import { authenticateGetQuestion } from '../../service/api.js';
 import AnswerQuestion from './AnswerQuestion.jsx';
+import { useTranslation } from 'react-i18next';
 
+// Styled components
 const StyledTableContainer = styled(TableContainer)`
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
     @media (max-width: 600px) {
@@ -23,6 +25,7 @@ const StyledTableCell = styled(TableCell)`
 `;
 
 const QuestionList = () => {
+    const { t } = useTranslation();
     const [questions, setQuestions] = useState([]);
     const [error, setError] = useState(null);
     const [openAnswerDialog, setOpenAnswerDialog] = useState(false); // State to control the visibility of the AnswerQuestion dialog
@@ -35,16 +38,16 @@ const QuestionList = () => {
                 if (response.status === 200) {
                     setQuestions(response.data.data);
                 } else {
-                    setError('Error loading questions');
+                    setError(t('error_loading_questions')); // Use translation key for error message
                 }
             } catch (error) {
-                console.error("Error occurred while fetching questions :", error);
-                setError('Error loading questions');
+                console.error(t('error_occurred_while_fetching_questions'), error);
+                setError(t('error_loading_questions')); // Use translation key for error message
             }
         };
 
         fetchQuestions();
-    }, []); // Empty dependency array ensures useEffect runs only once
+    }, [t]); // Add t to dependency array to avoid lint warnings
 
     // Function to handle opening the AnswerQuestion dialog
     const handleOpenAnswerDialog = (email, question) => {
@@ -57,9 +60,9 @@ const QuestionList = () => {
             <StyledTable>
                 <TableHead sx={{ backgroundColor: '#f0f0f0' }}>
                     <TableRow>
-                        <StyledTableCell>User Email</StyledTableCell>
-                        <StyledTableCell>Question</StyledTableCell>
-                        <StyledTableCell>Action</StyledTableCell>
+                        <StyledTableCell>{t('user_email')}</StyledTableCell> {/* Use translation key */}
+                        <StyledTableCell>{t('question')}</StyledTableCell> {/* Use translation key */}
+                        <StyledTableCell>{t('action')}</StyledTableCell> {/* Use translation key */}
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -84,7 +87,7 @@ const QuestionList = () => {
                                             padding: { xs: '8px', sm: '12px' } // Responsive padding for button
                                         }}
                                     >
-                                        Answer
+                                        {t('answer')} {/* Use translation key */}
                                     </Button>
                                 </StyledTableCell>
                             </TableRow>

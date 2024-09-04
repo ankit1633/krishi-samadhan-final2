@@ -3,7 +3,9 @@ import { Box, Typography, TextField, Button, styled, Dialog } from '@mui/materia
 import { authenticateWarehouse } from '../../service/api.js';
 import { DataContext } from '../../context/DataProvider.jsx';
 import WarehouseList from './WarehouseList.jsx';
+import { useTranslation } from 'react-i18next';
 
+// Styled components
 const StyledDialog = styled(Dialog)`
   .MuiDialog-paper {
     background-color: #f0f0f0;
@@ -51,6 +53,7 @@ const Error = styled(Typography)`
 `;
 
 const Warehouse = ({ openWarehouse, setWarehouseDialog }) => {
+    const { t } = useTranslation(); // Use translation hook
     const { user } = useContext(DataContext);
     const [warehouse, setWarehouse] = useState({ name: '', email: '', address: '', contact: '', capacity: '', price: '' });
     const [error, setError] = useState('');
@@ -72,11 +75,11 @@ const Warehouse = ({ openWarehouse, setWarehouseDialog }) => {
                 handleClose();
                 console.log(response.data);
             } else {
-                setError(response.data.message || 'Error adding warehouse');
+                setError(response.data.message || t('error_adding_warehouse')); // Use translation key
             }
         } catch (error) {
-            console.error("Error occurred while adding warehouse:", error);
-            setError('Error adding warehouse');
+            console.error(t('error_adding_warehouse'), error); // Use translation key
+            setError(t('error_adding_warehouse')); // Use translation key
         }
     };
 
@@ -88,7 +91,7 @@ const Warehouse = ({ openWarehouse, setWarehouseDialog }) => {
                         variant='standard'
                         onChange={onValueChange}
                         name='name'
-                        label='Enter name'
+                        label={t('enter_name')} // Use translation key
                         fullWidth
                         margin="normal"
                     />
@@ -96,7 +99,7 @@ const Warehouse = ({ openWarehouse, setWarehouseDialog }) => {
                         variant='standard'
                         onChange={onValueChange}
                         name='email'
-                        label='Enter email'
+                        label={t('enter_email')} // Use translation key
                         fullWidth
                         margin="normal"
                     />
@@ -104,7 +107,7 @@ const Warehouse = ({ openWarehouse, setWarehouseDialog }) => {
                         variant='standard'
                         onChange={onValueChange}
                         name='address'
-                        label='Enter address'
+                        label={t('enter_address')} // Use translation key
                         multiline
                         rows={4}
                         fullWidth
@@ -114,7 +117,7 @@ const Warehouse = ({ openWarehouse, setWarehouseDialog }) => {
                         variant='standard'
                         onChange={onValueChange}
                         name='contact'
-                        label='Enter contact'
+                        label={t('enter_contact')} // Use translation key
                         fullWidth
                         margin="normal"
                     />
@@ -122,7 +125,7 @@ const Warehouse = ({ openWarehouse, setWarehouseDialog }) => {
                         variant='standard'
                         onChange={onValueChange}
                         name='capacity'
-                        label='Capacity'
+                        label={t('capacity')} // Use translation key
                         multiline
                         rows={3}
                         fullWidth
@@ -132,12 +135,12 @@ const Warehouse = ({ openWarehouse, setWarehouseDialog }) => {
                         variant='standard'
                         onChange={onValueChange}
                         name='price'
-                        label='Price'
+                        label={t('price')} // Use translation key
                         fullWidth
                         margin="normal"
                     />
                     {error && <Error>{error}</Error>}
-                    <LoginButton onClick={addWarehouse}>Continue</LoginButton>
+                    <LoginButton onClick={addWarehouse}>{t('continue')}</LoginButton> {/* Use translation key */}
                 </ContentBox>
             ) : (
                 <ContentBox>

@@ -3,6 +3,7 @@ import { Box, Typography, Menu, MenuItem, styled, Snackbar, Alert } from '@mui/m
 import { PowerSettingsNew } from '@mui/icons-material';
 import { authenticateLogout } from '../../service/api'; // Adjust the import path as needed
 import { DataContext } from '../../context/DataProvider';
+import { useTranslation } from 'react-i18next';
 
 // Styled Menu component
 const Component = styled(Menu)`
@@ -17,6 +18,7 @@ const Logout = styled(Typography)`
 
 // Profile component
 const Profile = ({ account, setAccount }) => {
+    const { t } = useTranslation();
     const [open, setOpen] = useState(null);
     const [error, setError] = useState(false); // To handle potential logout errors
     const [successMessage, setSuccessMessage] = useState(false); // State for success message
@@ -95,7 +97,7 @@ const Profile = ({ account, setAccount }) => {
                     <Logout sx={{ 
                         fontSize: { xs: '12px', sm: '14px' }, // Responsive font size
                         marginLeft: { xs: 1, sm: 2 } // Responsive margin
-                    }}>Logout</Logout>
+                    }}>{t('logout')}</Logout> {/* Use translation key */}
                 </MenuItem>
             </Component>
 
@@ -107,7 +109,7 @@ const Profile = ({ account, setAccount }) => {
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
             >
                 <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
-                    Logout successful!
+                    {t('logout_success')} {/* Use translation key */}
                 </Alert>
             </Snackbar>
 
@@ -119,7 +121,7 @@ const Profile = ({ account, setAccount }) => {
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
             >
                 <Alert onClose={handleSnackbarClose} severity="error" sx={{ width: '100%' }}>
-                    An error occurred during logout. Please try again.
+                    {t('logout_error')} {/* Use translation key */}
                 </Alert>
             </Snackbar>
         </>

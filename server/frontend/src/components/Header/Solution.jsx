@@ -2,7 +2,9 @@ import React, { useContext, useState, useEffect } from 'react';
 import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Paper, Box, styled, Dialog } from '@mui/material';
 import { DataContext } from '../../context/DataProvider';
 import { authenticateGetSolution } from '../../service/api';
+import { useTranslation } from 'react-i18next';
 
+// Styled components
 const StyledDialog = styled(Dialog)`
   .MuiDialog-paper {
     background-color: #f0f0f0;
@@ -21,6 +23,7 @@ const StyledDialog = styled(Dialog)`
 `;
 
 const Solution = ({ openSolution, setSolutionDialog }) => {
+    const { t } = useTranslation(); // Use translation hook
     const { user, account } = useContext(DataContext);
     const [problems, setProblems] = useState([]);
     const [error, setError] = useState(null);
@@ -37,21 +40,21 @@ const Solution = ({ openSolution, setSolutionDialog }) => {
                         setProblems(response.data.data);  // Set problems from response
                         setError(null);
                     } else {
-                        setError('Error loading problems: No data found');
+                        setError(t('error_loading_problems_no_data')); // Use translation key
                     }
                 } else {
-                    setError('No user email provided');
+                    setError(t('no_user_email')); // Use translation key
                 }
             } catch (error) {
-                console.error("Error occurred while fetching problems:", error);
-                setError('Error loading problems: Network error');
+                console.error(t('error_fetching_problems'), error); // Use translation key
+                setError(t('error_loading_problems_network')); // Use translation key
             }
         };
     
         if (openSolution) {
             fetchProblems();
         }
-    }, [openSolution, user, account]);
+    }, [openSolution, user, account, t]); // Add t to dependency array
 
     const handleOpenImage = (imageUrl) => {
         setSelectedImage(imageUrl); // Set the selected image URL
@@ -71,10 +74,10 @@ const Solution = ({ openSolution, setSolutionDialog }) => {
                 <Table>
                     <TableHead sx={{ backgroundColor: '#f0f0f0' }}>
                         <TableRow>
-                            <TableCell sx={{ fontSize: { xs: '12px', sm: '14px' } }}>User Email</TableCell>
-                            <TableCell sx={{ fontSize: { xs: '12px', sm: '14px' } }}>Problem</TableCell>
-                            <TableCell sx={{ fontSize: { xs: '12px', sm: '14px' } }}>Solution</TableCell>
-                            <TableCell sx={{ fontSize: { xs: '12px', sm: '14px' } }}>Image</TableCell>
+                            <TableCell sx={{ fontSize: { xs: '12px', sm: '14px' } }}>{t('user_email')}</TableCell> {/* Use translation key */}
+                            <TableCell sx={{ fontSize: { xs: '12px', sm: '14px' } }}>{t('problem')}</TableCell> {/* Use translation key */}
+                            <TableCell sx={{ fontSize: { xs: '12px', sm: '14px' } }}>{t('solution')}</TableCell> {/* Use translation key */}
+                            <TableCell sx={{ fontSize: { xs: '12px', sm: '14px' } }}>{t('image')}</TableCell> {/* Use translation key */}
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -98,16 +101,18 @@ const Solution = ({ openSolution, setSolutionDialog }) => {
                                                     onClick={() => handleOpenImage(problem.img)}
                                                     sx={{ fontSize: { xs: '10px', sm: '14px' }, padding: { xs: '6px', sm: '8px' } }}
                                                 >
-                                                    Open image
+                                                    {t('open_image')} {/* Use translation key */}
                                                 </Button>
                                                 {selectedImage === problem.img && (
                                                     <Box mt={2} sx={{ textAlign: 'center' }}>
                                                         <img
                                                             src={selectedImage}
-                                                            alt="Problem Image"
+                                                            alt={t('problem_image')} // Use translation key
                                                             style={{ maxWidth: '100%', height: 'auto' }}
                                                         />
-                                                        <Button onClick={handleCloseImage} sx={{ marginTop: 1 }}>Close image</Button>
+                                                        <Button onClick={handleCloseImage} sx={{ marginTop: 1 }}>
+                                                            {t('close_image')} {/* Use translation key */}
+                                                        </Button>
                                                     </Box>
                                                 )}
                                             </>

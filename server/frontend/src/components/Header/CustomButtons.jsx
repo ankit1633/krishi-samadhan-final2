@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
-import { Box, Button, Typography, styled, Menu, MenuItem, IconButton, Drawer, List, ListItem, ListItemText } from '@mui/material';
+import { Box, Button, Typography, styled, Menu, MenuItem, IconButton, Drawer, List, ListItem, ListItemText, Dialog, DialogTitle } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import LoginDialog from '../login/LoginDialog';
 import Profile from './Profile';
 import Question from './Question';
@@ -8,9 +9,11 @@ import Solution from './Solution';
 import Warehouse from './Warehouse';
 import Weather from './Weather';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import MenuIcon from '@mui/icons-material/Menu'; // Import the menu icon
+import MenuIcon from '@mui/icons-material/Menu';
 import { DataContext } from '../../context/DataProvider';
+import LanguageSelector from './LanguageSelector';
 
+// Styled Button
 const LoginButton = styled(Button)`
     color: #008000;
     background: #F3CA52;
@@ -38,6 +41,7 @@ const LoginButton = styled(Button)`
     }
 `;
 
+// Styled Profile Button
 const ProfileButton = styled(IconButton)`
     color: #008000;
     background: #F3CA52;
@@ -60,6 +64,7 @@ const ProfileButton = styled(IconButton)`
     }
 `;
 
+// Wrapper for buttons
 const Wrapper = styled(Box)`
     display: flex;
     align-items: center;
@@ -68,10 +73,11 @@ const Wrapper = styled(Box)`
     justify-content: flex-end;
 
     @media (max-width: 600px) {
-        display: none; /* Hide for smaller screens */
+        display: none;
     }
 `;
 
+// Mobile menu icon
 const MobileMenuIcon = styled(IconButton)`
     display: none;
 
@@ -84,27 +90,58 @@ const MobileMenuIcon = styled(IconButton)`
     }
 `;
 
-// Added a spacing style for the "Rain notifier" button
+// Spaced Login Button
 const SpacedLoginButton = styled(LoginButton)`
-    margin-right: 20px; /* Adjust spacing as needed */
+    margin-right: 20px;
 `;
 
-// Styled wrapper for Weather component with left margin
+// Weather Wrapper
 const WeatherWrapper = styled(Box)`
     margin-left: 5px;
 `;
 
+// Language Button with same styles as LoginButton
+const LanguageButton = styled(Button)`
+    color: #008000;
+    background: #F3CA52;
+    text-transform: none;
+    font-weight: 600;
+    border-radius: 50px;
+    padding: 8px 20px;
+    height: 40px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    width: 150px;
+    transition: width 0.3s ease, background-color 0.3s ease;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    &:hover {
+        width: 180px;
+        background: #E0B646;
+    }
+
+    @media (max-width: 600px) {
+        width: 120px;
+        font-size: 14px;
+    }
+`;
+
+// Custom Buttons Component
 const CustomButtons = () => {
+    const { t } = useTranslation();
     const { account, setAccount, user, setUser } = useContext(DataContext);
     const [open, setOpen] = useState(false);
     const [openQuestion, setOpenQuestion] = useState(false);
     const [openWarehouse, setOpenWarehouse] = useState(false);
     const [openProblem, setOpenProblem] = useState(false);
     const [openSolution, setOpenSolution] = useState(false);
-    const [openWeather, setOpenWeather] = useState(true);
+    const [openWeather, setOpenWeather] = useState(false); // Initially set to false
     const [anchorEl, setAnchorEl] = useState(null);
     const [profileMenuAnchor, setProfileMenuAnchor] = useState(null);
     const [drawerOpen, setDrawerOpen] = useState(false);
+    const [languageDialogOpen, setLanguageDialogOpen] = useState(false);
 
     const openDialog = () => setOpen(true);
     const openQuestionDialog = () => setOpenQuestion(true);
@@ -126,15 +163,23 @@ const CustomButtons = () => {
     };
 
     const menuItems = [
-        { text: 'Login/Sign-up', action: openDialog, show: !account },
-        { text: 'Q&A', action: handleClick, show: user },
-        { text: user === "farmer" ? 'Warehouse List' : 'Add Warehouse', action: openWarehouseDialog, show: user },
-        { text: 'Weather', action: openWeatherDialog, show: true }
+        { text: t('login_signup'), action: openDialog, show: !account },
+        { text: t('qa'), action: handleClick, show: user },
+        { text: user === "farmer" ? t('warehouse_list') : t('add_warehouse'), action: openWarehouseDialog, show: user },
+        { text: t('weather'), action: openWeatherDialog, show: true }
     ];
 
     return (
         <>
             <Wrapper>
+                <LoginButton variant='contained' onClick={openDialog}>
+                    {t('login_signup')}
+                </LoginButton>
+
+                <LanguageButton variant='contained' onClick={() => setLanguageDialogOpen(true)}>
+                    {t('select_language')}
+                </LanguageButton>
+
                 {account ? (
                     <>
                         <ProfileButton onClick={handleProfileClick}>
@@ -142,25 +187,22 @@ const CustomButtons = () => {
                         </ProfileButton>
                         <Profile account={account} setAccount={setAccount} />
                     </>
-                ) : (
-                    <LoginButton variant='contained' onClick={openDialog}> Login/Sign-up </LoginButton>
-                )}
-                
+                ) : null}
+
                 {user && (
                     <>
-                        <LoginButton variant='contained' onClick={handleClick}>
-                            <Typography>Q&A</Typography>
-                        </LoginButton>
+                        <Typography>{t('qa')}</Typography>
+                        
                         <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
                             <MenuItem onClick={() => { openQuestionDialog(); handleClose(); }}>
-                                {user === "expert" ? "Answer a Question" : "Ask a Question"}
+                                {user === "expert" ? t('answer_question') : t('ask_question')}
                             </MenuItem>
                             <MenuItem onClick={() => { openProblemDialog(); handleClose(); }}>
-                                {user === "expert" ? "Answer a Problem" : "Ask a Problem"}
+                                {user === "expert" ? t('answer_problem') : t('ask_problem')}
                             </MenuItem>
                             {user === "farmer" && (
                                 <MenuItem onClick={() => { openSolutionDialog(); handleClose(); }}>
-                                    Solutions
+                                    {t('solutions')}
                                 </MenuItem>
                             )}
                         </Menu>
@@ -169,7 +211,7 @@ const CustomButtons = () => {
 
                 {user && (
                     <LoginButton variant='contained' onClick={openWarehouseDialog}>
-                        {user === "farmer" ? <Typography>Warehouse List</Typography> : <Typography>Add warehouse</Typography>}
+                        <Typography>{user === "farmer" ? t('warehouse_list') : t('add_warehouse')}</Typography>
                     </LoginButton>
                 )}
 
@@ -177,11 +219,10 @@ const CustomButtons = () => {
                     <>
                         <SpacedLoginButton 
                             variant='contained' 
-                            onClick={() => window.open('https://rain-check-topaz.vercel.app/', '_blank')} // Open URL in a new tab
+                            onClick={() => window.open('https://rain-check-topaz.vercel.app/', '_blank')}
                         >
-                            <Typography>Rain notifier</Typography>
+                            <Typography>{t('rain_notifier')}</Typography>
                         </SpacedLoginButton>
-                       
                     </>
                 )}
             </Wrapper>
@@ -214,11 +255,13 @@ const CustomButtons = () => {
             <Warehouse openWarehouse={openWarehouse} setWarehouseDialog={setOpenWarehouse} />
             <Problem openProblem={openProblem} setProblemDialog={setOpenProblem} />
             <Solution openSolution={openSolution} setSolutionDialog={setOpenSolution} />
-            {openWeather && (
-                <WeatherWrapper>
-                    <Weather />
-                </WeatherWrapper>
-            )}
+            <Weather open={openWeather} handleClose={closeWeatherDialog} />
+
+            {/* Language Selector Dialog */}
+            <Dialog open={languageDialogOpen} onClose={() => setLanguageDialogOpen(false)}>
+                <DialogTitle>{t('select_language')}</DialogTitle>
+                <LanguageSelector />
+            </Dialog>
         </>
     );
 };
