@@ -34,24 +34,20 @@ const LoginButton = styled(Button)`
     text-transform: none;
     font-weight: 600;
     border-radius: 50px;
-    padding: 8px 20px;
-    height: 40px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-    width: 180px;
+    padding: 6px 12px;  // Reduced padding
+    height: 32px;  // Reduced height
+    box-shadow: 0px 3px 4px rgba(0, 0, 0, 0.2);  // Reduced box shadow
+    font-size: 14px;  // Reduced font size
     transition: width 0.3s ease, background-color 0.3s ease;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: auto;  // Set to auto to fit content
     
     &:hover {
-        width: 220px;
         background: #E0B646;
     }
 
     @media (max-width: 600px) {
-        width: 150px;
-        font-size: 14px;
+        font-size: 12px;  // Smaller font size on mobile
+        padding: 4px 10px;  // Smaller padding on mobile
     }
 `;
 
@@ -59,28 +55,25 @@ const ProfileButton = styled(IconButton)`
     color: #008000;
     background: #F3CA52;
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    padding: 8px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 32px;  // Reduced width
+    height: 32px;  // Reduced height
+    padding: 4px;  // Reduced padding
+    box-shadow: 0px 3px 4px rgba(0, 0, 0, 0.2);  // Reduced box shadow
     
     &:hover {
         background: #E0B646;
     }
 
     @media (max-width: 600px) {
-        width: 35px;
-        height: 35px;
+        width: 28px;  // Smaller width on mobile
+        height: 28px;  // Smaller height on mobile
     }
 `;
 
 const Wrapper = styled(Box)`
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 10px;  // Reduced gap between buttons
     width: 100%;
     justify-content: flex-end;
 
@@ -97,12 +90,12 @@ const MobileMenuIcon = styled(IconButton)`
         color: #008000;
         background: #F3CA52;
         border-radius: 50%;
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+        box-shadow: 0px 3px 4px rgba(0, 0, 0, 0.2);  // Reduced box shadow
     }
 `;
 
 const SpacedLoginButton = styled(LoginButton)`
-    margin-right: 20px;
+    margin-right: 10px;  // Reduced margin-right
 `;
 
 const WeatherWrapper = styled(Box)`
@@ -115,24 +108,20 @@ const LanguageButton = styled(Button)`
     text-transform: none;
     font-weight: 600;
     border-radius: 50px;
-    padding: 8px 20px;
-    height: 40px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-    width: 150px;
+    padding: 6px 12px;  // Reduced padding
+    height: 32px;  // Reduced height
+    box-shadow: 0px 3px 4px rgba(0, 0, 0, 0.2);  // Reduced box shadow
+    font-size: 14px;  // Reduced font size
     transition: width 0.3s ease, background-color 0.3s ease;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: auto;  // Set to auto to fit content
     
     &:hover {
-        width: 180px;
         background: #E0B646;
     }
 
     @media (max-width: 600px) {
-        width: 120px;
-        font-size: 14px;
+        font-size: 12px;  // Smaller font size on mobile
+        padding: 4px 10px;  // Smaller padding on mobile
     }
 `;
 
@@ -196,7 +185,7 @@ const CustomButtons = () => {
                     </>
                 ) : null}
 
-                {1 && (
+                {user && (
                     <>
                         <LoginButton variant='contained' onClick={handleClick}>
                             <Typography>{t('qa')}</Typography>
