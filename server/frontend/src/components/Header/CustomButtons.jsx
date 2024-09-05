@@ -176,14 +176,7 @@ const CustomButtons = () => {
                     {t('select_language')}
                 </LanguageButton>
 
-                {account ? (
-                    <>
-                        <ProfileButton onClick={handleProfileClick}>
-                            <AccountCircleIcon />
-                        </ProfileButton>
-                        <Profile account={account} setAccount={setAccount} />
-                    </>
-                ) : null}
+            
 
 {user && (
                     <>
