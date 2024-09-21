@@ -178,7 +178,7 @@ const CustomButtons = () => {
 
             
 
-{1 && (
+{user && (
                     <>
                         <LoginButton variant='contained' onClick={handleClick}>
                             <Typography>Q&A</Typography>
