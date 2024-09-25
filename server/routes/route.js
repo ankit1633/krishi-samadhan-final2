@@ -32,12 +32,12 @@ const storage = multer.memoryStorage(); // Store file in memory
 const upload = multer({ storage: storage });
 
 // Routes
-router.post('/signup', authenticateToken, userSignup);
-router.post('/login', authenticateToken,  userLogIn);
-router.post('/logout',  authenticateToken,  userLogout);
-router.post('/expertLogin', authenticateToken,  expertLogIn);
-router.post('/distributor-signup', authenticateToken,  distributorSignup);
-router.post('/distributor-login', authenticateToken,  distributorLogIn);
+router.post('/signup', userSignup);
+router.post('/login',   userLogIn);
+router.post('/logout',  userLogout);
+router.post('/expertLogin',  expertLogIn);
+router.post('/distributor-signup',  distributorSignup);
+router.post('/distributor-login',  distributorLogIn);
 
 // Protected Routes
 router.post('/add-question', authenticateToken, addQuestion);
