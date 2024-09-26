@@ -184,15 +184,15 @@ const CustomButtons = () => {
                             <Typography>Q&A</Typography>
                         </LoginButton>
                         <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
-                            <MenuItem onClick={() => { openQuestionDialog() }}>
-                                {user === "expert" ? "Answer a Question" : "Ask a Question"}
+                            <MenuItem onClick={() => { openQuestionDialog(); handleClose(); }}>
+                                {user === "expert" ? t('answer_question') : t('ask_question')}
                             </MenuItem>
-                            <MenuItem onClick={() => { openProblemDialog() }}>
-                                {user === "expert" ? "Answer a Problem" : "Ask a Problem"}
+                            <MenuItem onClick={() => { openProblemDialog(); handleClose(); }}>
+                                {user === "expert" ? t('answer_problem') : t('ask_problem')}
                             </MenuItem>
                             {user === "farmer" && (
-                                <MenuItem onClick={() => { openSolutionDialog()}}>
-                                    Solutions
+                                <MenuItem onClick={() => { openSolutionDialog(); handleClose(); }}>
+                                    {t('solutions')}
                                 </MenuItem>
                             )}
                         </Menu>
