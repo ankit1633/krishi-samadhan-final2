@@ -69,7 +69,26 @@
     "temperature": "Temperature (°C)",
     "humidity": "Humidity (%)",
     "wind_speed": "Wind Speed (m/s)",
-    "rain_chance": "Rain Chance (mm)"
+    "rain_chance": "Rain Chance (mm)",
+    "farmer_login": "Farmer Login",
+  "expert_login": "Expert Login",
+  "distributor_login": "Distributor Login",
+  "invalid_email": "Please enter valid Email",
+  "login": "Login",
+  "enter_email_or_mobile": "Enter Email/Mobile number",
+  "invalid_email_or_mobile": "Please enter valid Email ID/Mobile number",
+  "enter_password": "Enter Password",
+  "invalid_email_password": "Please enter valid Email and Password",
+  "terms_and_conditions": "By continuing, you agree to Krishi-samadhan's Terms of Use and Privacy Policy.",
+  "or": "OR",
+  "request_otp": "Request OTP",
+  "create_account": "New to Krishi-samadhan? Create an account",
+  "enter_firstname": "Enter Firstname",
+  "enter_lastname": "Enter Lastname",
+  "enter_username": "Enter Username",
+  "enter_phone": "Enter Phone",
+  "success_message": "Successfully logged in!"
+ 
   
   }
   

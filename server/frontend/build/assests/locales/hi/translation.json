@@ -69,6 +69,25 @@
     "temperature": "तापमान (°C)",
     "humidity": "आर्द्रता (%)",
     "wind_speed": "हवा की गति (m/s)",
-    "rain_chance": "बारिश की संभावना (mm)"
+    "rain_chance": "बारिश की संभावना (mm)",
+    "farmer_login": "किसान लॉगिन",
+  "expert_login": "विशेषज्ञ लॉगिन",
+  "distributor_login": "वितरक लॉगिन",
+  "enter_password": "पासवर्ड दर्ज करें",
+  "invalid_email": "कृपया सही ईमेल दर्ज करें",
+  "terms_and_conditions": "जारी रखने से, आप Krishi-samadhan की उपयोग की शर्तों और गोपनीयता नीति से सहमत हैं।",
+  "login": "लॉगिन",
+  "or": "या",
+  "request_otp": "OTP अनुरोध करें",
+  "create_account": "Krishi-samadhan पर नए हैं? एक खाता बनाएँ",
+  "enter_firstname": "पहला नाम दर्ज करें",
+  "enter_lastname": "अंतिम नाम दर्ज करें",
+  "enter_username": "उपयोगकर्ता नाम दर्ज करें",
+  "enter_phone": "फोन नंबर दर्ज करें",
+  "success_message": "सफलतापूर्वक लॉगिन किया गया!",
+  "enter_email_or_mobile": "ईमेल/मोबाइल नंबर दर्ज करें",
+  "invalid_email_or_mobile": "कृपया सही ईमेल आईडी/मोबाइल नंबर दर्ज करें",
+  "invalid_email_password": "कृपया सही ईमेल और पासवर्ड दर्ज करें"
+
   }
   
