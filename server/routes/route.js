@@ -33,11 +33,11 @@ const upload = multer({ storage: storage });
 
 // Routes
 router.post('/signup', userSignup);
-router.post('/login', userLogIn);
-router.post('/logout', userLogout);
-router.post('/expertLogin', expertLogIn);
-router.post('/distributor-signup', distributorSignup);
-router.post('/distributor-login', distributorLogIn);
+router.post('/login',   userLogIn);
+router.post('/logout',  userLogout);
+router.post('/expertLogin',  expertLogIn);
+router.post('/distributor-signup',  distributorSignup);
+router.post('/distributor-login',  distributorLogIn);
 
 // Protected Routes
 router.post('/add-question', authenticateToken, addQuestion);
