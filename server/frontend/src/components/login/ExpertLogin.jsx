@@ -1,8 +1,7 @@
 import React, { useState, useContext } from 'react';
-import { Dialog, TextField, Box, Typography, Button, styled, Snackbar, Alert } from '@mui/material';
+import { Dialog, TextField, Box, Typography, Button, styled } from '@mui/material';
 import { authenticateExpertLogin } from '../../service/api.js';
 import { DataContext } from '../../context/DataProvider.jsx';
-import { useTranslation } from 'react-i18next';  // Import useTranslation hook
 
 const LoginButton = styled(Button)`
     text-transform: none;
@@ -36,12 +35,10 @@ const expertLoginInitialValues = {
     password: ''
 };
 
-const ExpertLogin = ({ open, onClose, onSuccess }) => {
-    const { setAccount, setUser, updateUser } = useContext(DataContext);
-    const { t } = useTranslation();  // Use the translation hook
+const ExpertLogin = ({ open, onClose }) => {
+    const { setAccount , setUser,updateUser} = useContext(DataContext);
     const [expertLogin, setExpertLogin] = useState(expertLoginInitialValues);
     const [error, setError] = useState(false);
-    const [success, setSuccess] = useState(false); // State for managing success snackbar
 
     const onValueChange = (e) => {
         setExpertLogin({ ...expertLogin, [e.target.name]: e.target.value });
@@ -58,11 +55,10 @@ const ExpertLogin = ({ open, onClose, onSuccess }) => {
             const response = await authenticateExpertLogin(expertLogin);
             if (response.status === 200) {
                 handleClose(); // Close the dialog on successful login
+                console.log(response.data);
                 setAccount(expertLogin.username);
                 updateUser("expert");
                 setUser("expert");
-                setSuccess(true); // Show success message on successful login
-                onSuccess(); // Call onSuccess to close all dialogs
             } else {
                 setError(true); // Display error message if login fails
             }
@@ -73,41 +69,26 @@ const ExpertLogin = ({ open, onClose, onSuccess }) => {
     };
 
     return (
-        <>
-            <Dialog open={open} onClose={handleClose} >
-                <Wrapper>
-                    <TextField
-                        variant="standard"
-                        onChange={onValueChange}
-                        name='username'
-                        label={t('enter_email_or_mobile')}
-                        value={expertLogin.username} // Bind value to state
-                    />
-                    {error && <Error>{t('invalid_email_or_mobile')}</Error>}
-                    <TextField
-                        variant="standard"
-                        onChange={onValueChange}
-                        name='password'
-                        label={t('enter_password')}
-                        type="password"
-                        value={expertLogin.password} // Bind value to state
-                    />
-                    <LoginButton onClick={loginExpert}>{t('login')}</LoginButton>
-                </Wrapper>
-            </Dialog>
-
-            {/* Snackbar for Success Message */}
-            <Snackbar
-                open={success}
-                autoHideDuration={4000}
-                onClose={() => setSuccess(false)}
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-            >
-                <Alert onClose={() => setSuccess(false)} severity="success" sx={{ width: '100%' }}>
-                    {t('success_message')}
-                </Alert>
-            </Snackbar>
-        </>
+        <Dialog open={open} onClose={handleClose} >
+            <Wrapper>
+                <TextField
+                    variant="standard"
+                    onChange={onValueChange}
+                    name='username'
+                    label='Enter Email/Mobile number'
+                    value={expertLogin.username} // Bind value to state
+                />
+                {error && <Error>Please enter valid Email ID/Mobile number</Error>}
+                <TextField
+                    variant="standard"
+                    onChange={onValueChange}
+                    name='password'
+                    label='Enter Password'
+                    value={expertLogin.password} // Bind value to state
+                />
+                <LoginButton onClick={loginExpert}>Login</LoginButton>
+            </Wrapper>
+        </Dialog>
     );
 };
 

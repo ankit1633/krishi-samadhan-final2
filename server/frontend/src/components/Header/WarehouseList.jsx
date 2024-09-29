@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { authenticateGetWarehouse } from '../../service/api.js';
-import { useTranslation } from 'react-i18next';
 
 const WarehouseList = () => {
-    const { t } = useTranslation(); // Use translation hook
     const [warehouses, setWarehouses] = useState([]);
     const [error, setError] = useState(null);
 
@@ -15,46 +13,48 @@ const WarehouseList = () => {
                 if (response.status === 200) {
                     setWarehouses(response.data.data);
                 } else {
-                    setError(t('error_loading_warehouses')); // Use translation key
+                    setError('Error loading warehouses');
                 }
             } catch (error) {
-                console.error(t('error_loading_warehouses_network'), error); // Use translation key
-                setError(t('error_loading_warehouses_network')); // Use translation key
+                console.error("Error occurred while fetching warehouses:", error);
+                setError('Error loading warehouses');
             }
         };
 
         fetchWarehouses();
-    }, [t]); // Added translation key dependency
+    }, []); // Empty dependency array ensures useEffect runs only once
 
     return (
-        <TableContainer component={Paper} sx={{ boxShadow: 2, overflowX: 'auto' }}>
+        <TableContainer component={Paper} sx={{ boxShadow: 2 }}>
             <Table>
                 <TableHead sx={{ backgroundColor: '#f0f0f0' }}>
                     <TableRow>
-                        <TableCell>{t('name')}</TableCell> {/* Use translation key */}
-                        <TableCell>{t('email')}</TableCell> {/* Use translation key */}
-                        <TableCell>{t('address')}</TableCell> {/* Use translation key */}
-                        <TableCell>{t('contact')}</TableCell> {/* Use translation key */}
-                        <TableCell>{t('capacity')}</TableCell> {/* Use translation key */}
-                        <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>{t('price')}</TableCell> {/* Use translation key */}
+                        <TableCell>ID</TableCell>
+                        <TableCell>Name</TableCell>
+                        <TableCell>Email</TableCell>
+                        <TableCell>Address</TableCell>
+                        <TableCell>Contact</TableCell>
+                        <TableCell>Capacity</TableCell>
+                        <TableCell>Price</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {error ? (
                         <TableRow>
-                            <TableCell colSpan={6}>
+                            <TableCell colSpan={7}>
                                 <Typography>{error}</Typography>
                             </TableCell>
                         </TableRow>
                     ) : (
                         warehouses.map(warehouse => (
                             <TableRow key={warehouse.id} sx={{ '&:nth-of-type(odd)': { backgroundColor: '#f9f9f9' } }}>
+                                <TableCell>{warehouse.id}</TableCell>
                                 <TableCell>{warehouse.name}</TableCell>
                                 <TableCell>{warehouse.email}</TableCell>
                                 <TableCell>{warehouse.address}</TableCell>
                                 <TableCell>{warehouse.contact}</TableCell>
                                 <TableCell>{warehouse.capacity}</TableCell>
-                                <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>{warehouse.price}</TableCell>
+                                <TableCell>{warehouse.price}</TableCell>
                             </TableRow>
                         ))
                     )}

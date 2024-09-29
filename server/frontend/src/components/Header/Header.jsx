@@ -4,31 +4,23 @@ import CustomButtons from './CustomButtons'; // Adjust path if necessary
 import logo from './logo2.jpeg'; // Adjust path if necessary
 
 const Header = () => {
-    // Styled AppBar with media queries
-    const StyledHeader = styled(AppBar)(({ theme }) => ({
-        background: '#008000',
-        height: 60,
-        [theme.breakpoints.down('sm')]: {
-            height: 50, // Adjust height for small screens
-        },
-    }));
+    const StyledHeader = styled(AppBar)`
+        background: #008000;
+        height: 60px;
+        position: relative; /* Ensure relative positioning */
+    `;
 
-    // Styled image with media queries
-    const Image = styled('img')(({ theme }) => ({
+    const Image = styled('img')({
         width: 100,
-        height: 50,
-        [theme.breakpoints.down('sm')]: {
-            width: 80, // Adjust width for small screens
-            height: 40, // Adjust height for small screens
-        },
-    }));
+        height: 50
+    });
 
     return (
         <StyledHeader>
             <Toolbar>
                 <Box style={{ display: 'flex', alignItems: 'center' }}>
-                    <Image src={logo} alt='logo' /> {/* New logo */}
-                    <CustomButtons /> {/* Existing custom buttons */}
+                    <Image src={logo} alt='logo' />
+                    <CustomButtons />
                 </Box>
             </Toolbar>
         </StyledHeader>
